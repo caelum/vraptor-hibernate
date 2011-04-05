@@ -21,7 +21,9 @@ import javax.annotation.PreDestroy;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
 
+import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.ioc.ApplicationScoped;
 import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.ioc.ComponentFactory;
@@ -30,17 +32,24 @@ import br.com.caelum.vraptor.ioc.ComponentFactory;
  * Creates a SessionFactory from default resource /hibernate.cfg.xml, using
  * AnnotationConfiguration, and provides it to container
  * @author Lucas Cavalcanti
- *
+ * @author Guilherme Silveira
  */
 @Component
 @ApplicationScoped
 public class SessionFactoryCreator implements ComponentFactory<SessionFactory> {
 
 	private SessionFactory factory;
+	private final Environment env;
 
-	@PostConstruct
+    public SessionFactoryCreator(Environment env) {
+		this.env = env;
+    }
+
+    @PostConstruct
 	public void create() {
-		factory = new AnnotationConfiguration().configure().buildSessionFactory();
+        Configuration configuration = new AnnotationConfiguration();
+        configuration = configuration.configure(env.getResource("/hibernate.cfg.xml"));
+        factory = configuration.buildSessionFactory();
 	}
 
 	public SessionFactory getInstance() {
