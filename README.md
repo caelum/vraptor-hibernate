@@ -13,8 +13,8 @@ You only need to copy the jar to your classpath. VRaptor will register plugin wh
 your application starts without any configurations. Downloads are available in 
 downloads area or in Maven Repository:
 
-<dependency>
-  <groupId>br.com.caelum.vraptor</groupId>
-	<artifactId>vraptor-plugin-hibernate4</artifactId>
-	<version>1.0.0</version>
-</dependency>
+	<dependency>
+	  <groupId>br.com.caelum.vraptor</groupId>
+	  <artifactId>vraptor-plugin-hibernate4</artifactId>
+	  <version>1.0.0</version>
+	</dependency>
