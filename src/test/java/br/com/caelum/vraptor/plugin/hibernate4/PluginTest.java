@@ -2,12 +2,20 @@ package br.com.caelum.vraptor.plugin.hibernate4;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.stub;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.net.URL;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.junit.Test;
+import org.mockito.Mock;
+
+import br.com.caelum.vraptor.environment.Environment;
 
 public class PluginTest {
 
@@ -23,8 +31,13 @@ public class PluginTest {
     private SessionCreator sessionCreator;
     private Session session;
 
+    @Mock
+    private Environment env;
+
     @Test
     public void main() {
+        initMocks(this);
+
         buildConfiguration();
         buildServiceRegistry();
         buildSessionFactory();
@@ -40,7 +53,10 @@ public class PluginTest {
     }
 
     private void buildConfiguration() {
-        configurationCreator = new ConfigurationCreator();
+        URL hibcfg = getClass().getResource("/hibernate.cfg.xml");
+        stub(env.getResource(anyString())).toReturn(hibcfg);
+
+        configurationCreator = new ConfigurationCreator(env);
         configurationCreator.create();
         configuration = configurationCreator.getInstance();
     }
