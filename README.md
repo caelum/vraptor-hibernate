@@ -18,3 +18,7 @@ downloads area or in Maven Repository:
 	  <artifactId>vraptor-plugin-hibernate4</artifactId>
 	  <version>1.0.0</version>
 	</dependency>
+
+# Environment support
+
+This plugin supports VRaptor Environment. See instructions here: https://github.com/caelum/vraptor-environment
