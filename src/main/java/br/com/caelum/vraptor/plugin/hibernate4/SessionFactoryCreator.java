@@ -50,7 +50,7 @@ public class SessionFactoryCreator
      * Build a {@link SessionFactory}.
      */
     @PostConstruct
-    protected void create() {
+    public void create() {
         sessionFactory = cfg.buildSessionFactory(serviceRegistry);
     }
 
@@ -58,7 +58,7 @@ public class SessionFactoryCreator
      * Closes {@link SessionFactory} if it's not closed.
      */
     @PreDestroy
-    protected void destroy() {
+    public void destroy() {
         if (!sessionFactory.isClosed()) {
             sessionFactory.close();
         }
