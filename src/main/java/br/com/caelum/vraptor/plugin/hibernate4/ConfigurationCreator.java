@@ -49,7 +49,7 @@ public class ConfigurationCreator
      * needs.
      */
     @PostConstruct
-    protected void create() {
+    public void create() {
         cfg = new Configuration().configure(env.getResource("/hibernate.cfg.xml"));
         configureExtras();
     }
