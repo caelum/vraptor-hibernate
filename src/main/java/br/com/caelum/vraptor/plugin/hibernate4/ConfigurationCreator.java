@@ -16,6 +16,8 @@
  */
 package br.com.caelum.vraptor.plugin.hibernate4;
 
+import java.net.URL;
+
 import javax.annotation.PostConstruct;
 
 import org.hibernate.cfg.Configuration;
@@ -24,6 +26,7 @@ import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.ioc.ApplicationScoped;
 import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.ioc.ComponentFactory;
+import br.com.caelum.vraptor.ioc.Container;
 
 /**
  * Creates a Hibernate {@link Configuration}, once when application starts.
@@ -36,22 +39,39 @@ public class ConfigurationCreator
     implements ComponentFactory<Configuration> {
 
     private Configuration cfg;
-    private Environment env;
+    private Container container;
 
-    public ConfigurationCreator(Environment env) {
-        this.env = env;
+    public ConfigurationCreator(Container container) {
+        this.container = container;
     }
 
     /**
      * Create a new instance for {@link Configuration}, and after call the
      * {@link ConfigurationCreator#configureExtras()} method, that you can override to configure extra guys.
-     * This method uses vraptor-environment that allow you to get different resources for each environment you
-     * needs.
+     * If vraptor-environment is available on classpath, this method will use then to locate hibernate cfg
+     * file.
      */
     @PostConstruct
     public void create() {
-        cfg = new Configuration().configure(env.getResource("/hibernate.cfg.xml"));
+        cfg = new Configuration().configure(getHibernateCfgLocation());
         configureExtras();
+    }
+
+    private URL getHibernateCfgLocation() {
+        if (isEnvironmentAvailable()) {
+            Environment env = container.instanceFor(Environment.class);
+            return env.getResource(getHibernateCfgName());
+        }
+
+        return getClass().getResource(getHibernateCfgName());
+    }
+
+    protected String getHibernateCfgName() {
+        return "/hibernate.cfg.xml";
+    }
+
+    private boolean isEnvironmentAvailable() {
+        return container.canProvide(Environment.class);
     }
 
     /**

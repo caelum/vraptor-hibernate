@@ -19,8 +19,9 @@ package br.com.caelum.vraptor.plugin.hibernate4;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.stub;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.Mockito.when;
 
 import java.net.URL;
 
@@ -29,9 +30,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import br.com.caelum.vraptor.environment.Environment;
+import br.com.caelum.vraptor.ioc.Container;
 
 public class PluginTest {
 
@@ -47,14 +48,15 @@ public class PluginTest {
     private SessionCreator sessionCreator;
     private Session session;
 
-    @Mock
+    private Container container;
     private Environment env;
 
     @Test
-    public void main() {
-        initMocks(this);
+    public void testWithoutEnvironment() {
+        container = mock(Container.class);
+        env = mock(Environment.class);
 
-        buildConfiguration();
+        buildConfigurationWithoutEnvironment();
         buildServiceRegistry();
         buildSessionFactory();
         buildSession();
@@ -68,11 +70,41 @@ public class PluginTest {
         assertTrue(sessionFactory.isClosed());
     }
 
-    private void buildConfiguration() {
+    @Test
+    public void testWithEnvironment() {
+        container = mock(Container.class);
+        env = mock(Environment.class);
+
+        buildConfigurationWithEnvironment();
+        buildServiceRegistry();
+        buildSessionFactory();
+        buildSession();
+
+        assertFalse(sessionFactory.isClosed());
+        assertTrue(session.isOpen());
+
+        destroyObjects();
+
+        assertFalse(session.isOpen());
+        assertTrue(sessionFactory.isClosed());
+    }
+
+    private void buildConfigurationWithoutEnvironment() {
+        when(container.canProvide(Environment.class)).thenReturn(false);
+
+        configurationCreator = new ConfigurationCreator(container);
+        configurationCreator.create();
+        configuration = configurationCreator.getInstance();
+    }
+
+    private void buildConfigurationWithEnvironment() {
+        when(container.canProvide(Environment.class)).thenReturn(true);
+        when(container.instanceFor(Environment.class)).thenReturn(env);
+        
         URL hibcfg = getClass().getResource("/hibernate.cfg.xml");
         stub(env.getResource(anyString())).toReturn(hibcfg);
 
-        configurationCreator = new ConfigurationCreator(env);
+        configurationCreator = new ConfigurationCreator(container);
         configurationCreator.create();
         configuration = configurationCreator.getInstance();
     }
