@@ -16,6 +16,8 @@
  */
 package br.com.caelum.vraptor.util.hibernate;
 
+import java.net.URL;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
@@ -27,6 +29,7 @@ import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.ioc.ApplicationScoped;
 import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.ioc.ComponentFactory;
+import br.com.caelum.vraptor.ioc.Container;
 
 /**
  * Creates a SessionFactory from default resource /hibernate.cfg.xml, using
@@ -40,17 +43,17 @@ import br.com.caelum.vraptor.ioc.ComponentFactory;
 public class SessionFactoryCreator implements ComponentFactory<SessionFactory> {
 
 	private SessionFactory factory;
-	private final Environment env;
+	private final Container container;
 
-    public SessionFactoryCreator(Environment env) {
-		this.env = env;
-    }
+	public SessionFactoryCreator(Container container) {
+		this.container = container;
+	}
 
-    @PostConstruct
+	@PostConstruct
 	public void create() {
-        Configuration configuration = new AnnotationConfiguration();
-        configuration = configuration.configure(env.getResource("/hibernate.cfg.xml"));
-        factory = configuration.buildSessionFactory();
+		Configuration configuration = new AnnotationConfiguration();
+		configuration = configuration.configure(getHibernateCfgLocation());
+		factory = configuration.buildSessionFactory();
 	}
 
 	public SessionFactory getInstance() {
@@ -60,6 +63,28 @@ public class SessionFactoryCreator implements ComponentFactory<SessionFactory> {
 	@PreDestroy
 	public void destroy() {
 		factory.close();
+	}
+	
+	private URL getHibernateCfgLocation() {
+		if (isEnvironmentAvailable()) {
+			Environment env = container.instanceFor(Environment.class);
+			return env.getResource(getHibernateCfgName());
+		}
+
+		return getClass().getResource(getHibernateCfgName());
+	}
+	
+	protected String getHibernateCfgName() {
+		return "/hibernate.cfg.xml";
+	}
+	
+	private boolean isEnvironmentAvailable() {
+		try {
+			Class.forName("br.com.caelum.vraptor.environment.Environment");
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
 	}
 
 }
