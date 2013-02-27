@@ -30,7 +30,8 @@ import br.com.caelum.vraptor.ioc.ComponentFactory;
 
 /**
  * Creates a SessionFactory from default resource /hibernate.cfg.xml, using
- * AnnotationConfiguration, and provides it to container
+ * AnnotationConfiguration, and provides it to container.
+ * 
  * @author Lucas Cavalcanti
  * @author Guilherme Silveira
  */
