@@ -1,6 +1,6 @@
 ## vraptor-hibernate
 
-A vraptor hibernate plugin that adds support to hibernate on specific environments.
+A VRaptor Hibernate 3 plugin that adds support to Hibernate on specific environments.
 
 # installing
 
@@ -30,4 +30,4 @@ Given, for example, "production", the loaded file is now "/production/hibernate.
 
 # help
 
-Get help from vraptor developers and the community at vraptor's mailing list.
+Get help from vraptor developers and the community at VRaptor's mailing list.
