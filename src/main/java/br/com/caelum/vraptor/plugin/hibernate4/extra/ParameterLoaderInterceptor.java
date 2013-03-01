@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.caelum.vraptor.util.hibernate.extra;
+package br.com.caelum.vraptor.plugin.hibernate4.extra;
 
 import static br.com.caelum.vraptor.util.collections.Filters.hasAnnotation;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -51,7 +51,7 @@ import com.google.common.collect.Iterables;
  * @author Lucas Cavalcanti
  * @author Cecilia Fernandes
  * @author Otávio Scherer Garcia
- * @since 3.4.0
+ * @since vraptor 3.4.0
  *
  */
 @Intercepts(before=ParametersInstantiatorInterceptor.class)
