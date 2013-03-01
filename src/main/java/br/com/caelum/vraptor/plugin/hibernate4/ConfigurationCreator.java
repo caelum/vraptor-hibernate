@@ -71,7 +71,12 @@ public class ConfigurationCreator
     }
 
     private boolean isEnvironmentAvailable() {
-        return container.canProvide(Environment.class);
+        try {
+            Class.forName("br.com.caelum.vraptor.environment.Environment");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
     /**
