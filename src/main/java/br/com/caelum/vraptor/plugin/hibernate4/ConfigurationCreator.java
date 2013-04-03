@@ -57,7 +57,7 @@ public class ConfigurationCreator
         configureExtras();
     }
 
-    private URL getHibernateCfgLocation() {
+    protected URL getHibernateCfgLocation() {
         if (isEnvironmentAvailable()) {
             Environment env = container.instanceFor(Environment.class);
             return env.getResource(getHibernateCfgName());
@@ -70,7 +70,7 @@ public class ConfigurationCreator
         return "/hibernate.cfg.xml";
     }
 
-    private boolean isEnvironmentAvailable() {
+    protected boolean isEnvironmentAvailable() {
         try {
             Class.forName("br.com.caelum.vraptor.environment.Environment");
             return true;

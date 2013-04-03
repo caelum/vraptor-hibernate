@@ -20,6 +20,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.when;
 
@@ -93,6 +94,9 @@ public class PluginTest {
         when(container.canProvide(Environment.class)).thenReturn(false);
 
         configurationCreator = new ConfigurationCreator(container);
+        configurationCreator = spy(configurationCreator);
+        when(configurationCreator.isEnvironmentAvailable()).thenReturn(false);
+        
         configurationCreator.create();
         configuration = configurationCreator.getInstance();
     }
