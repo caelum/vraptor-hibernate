@@ -4,15 +4,75 @@
 
 	<groupId>br.com.caelum.vraptor</groupId>
 	<artifactId>vraptor-hibernate</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>vraptor-hibernate</name>
-	<url>http://maven.apache.org</url>
+	<url>http://vraptor.caelum.com.br</url>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
+	<developers>
+		<developer>
+			<id>lucascs</id>
+			<name>Lucas Cavalcanti</name>
+			<email>lucasmrtuner@gmail.com</email>
+			<organization>Caelum</organization>
+			<organizationUrl>http://www.caelum.com.br</organizationUrl>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>-3</timezone>
+		</developer>
+		<developer>
+			<id>peas</id>
+			<name>Paulo Silveira</name>
+			<email>paulo.silveira@caelum.com.br</email>
+			<organization>Caelum</organization>
+			<organizationUrl>http://www.caelum.com.br</organizationUrl>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>-3</timezone>
+		</developer>
+		<developer>
+			<id>garcia-jj</id>
+			<name>Otávio Garcia</name>
+			<email>otavio@otavio.com.br</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>-3</timezone>
+		</developer>
+	</developers>
+
+	<organization>
+		<name>Caelum</name>
+		<url>http://www.caelum.com.br</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<distribution>repo</distribution>
+			<name>Apache License, Version 2.0</name>
+			<url>http://apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>http://github.com/caelum/vraptor-hibernate</url>
+		<connection>scm:git:git://github.com/caelum/vraptor-hibernate</connection>
+		<developerConnection>scm:git:git@github.com:caelum/vraptor-hibernate.git</developerConnection>
+	</scm>
+
 
 	<dependencies>
 		<dependency>
