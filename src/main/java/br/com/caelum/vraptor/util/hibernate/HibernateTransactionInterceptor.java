@@ -43,13 +43,12 @@ public class HibernateTransactionInterceptor implements Interceptor {
         this.validator = validator;
     }
 
-    //TODO I think that transaction null check is unnecessary, since we never get null transation (garcia-jj)
     public void intercept(InterceptorStack stack, ResourceMethod method, Object instance) {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
             stack.next(method, instance);
-            if (!validator.hasErrors() && transaction != null) {
+            if (!validator.hasErrors() && transaction.isActive()) {
                 transaction.commit();
             }
         } finally {
