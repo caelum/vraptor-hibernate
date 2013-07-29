@@ -50,7 +50,7 @@ public class HibernateTransactionInterceptorTest {
         HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
 
         when(session.beginTransaction()).thenReturn(transaction);
-        when(transaction.isActive()).thenReturn(false);
+        when(transaction.isActive()).thenReturn(true);
 
         interceptor.intercept(stack, method, instance);
 

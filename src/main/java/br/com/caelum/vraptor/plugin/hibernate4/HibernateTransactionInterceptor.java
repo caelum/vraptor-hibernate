@@ -47,7 +47,7 @@ public class HibernateTransactionInterceptor
         try {
             transaction = session.beginTransaction();
             stack.next(method, instance);
-            if (!validator.hasErrors()) {
+            if (!validator.hasErrors() && transaction.isActive()) {
                 transaction.commit();
             }
         } finally {
