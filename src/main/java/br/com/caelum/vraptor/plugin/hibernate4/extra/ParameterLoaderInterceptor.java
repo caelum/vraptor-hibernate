@@ -26,11 +26,14 @@ import org.hibernate.type.Type;
 
 import br.com.caelum.vraptor4.BeforeCall;
 import br.com.caelum.vraptor4.Converter;
+import br.com.caelum.vraptor4.InterceptionException;
 import br.com.caelum.vraptor4.Intercepts;
 import br.com.caelum.vraptor4.Result;
 import br.com.caelum.vraptor4.core.Converters;
+import br.com.caelum.vraptor4.core.InterceptorStack;
 import br.com.caelum.vraptor4.core.Localization;
 import br.com.caelum.vraptor4.http.ParameterNameProvider;
+import br.com.caelum.vraptor4.interceptor.Interceptor;
 import br.com.caelum.vraptor4.interceptor.ParametersInstantiatorInterceptor;
 import br.com.caelum.vraptor4.restfulie.controller.ControllerMethod;
 import br.com.caelum.vraptor4.view.FlashScope;
@@ -53,7 +56,7 @@ import static java.util.Arrays.asList;
  *
  */
 @Intercepts(before=ParametersInstantiatorInterceptor.class)
-public class ParameterLoaderInterceptor{
+public class ParameterLoaderInterceptor implements Interceptor{
 
     private Session session;
     private HttpServletRequest request;
@@ -70,7 +73,7 @@ public class ParameterLoaderInterceptor{
     
     @Inject
     public ParameterLoaderInterceptor(Session session, HttpServletRequest request, ParameterNameProvider provider,
-            Result result, Converters converters, Localization localization, FlashScope flash,ControllerMethod method) {
+            Result result, Converters converters, Localization localization, FlashScope flash) {
         this.session = session;
         this.request = request;
         this.provider = provider;
@@ -78,15 +81,14 @@ public class ParameterLoaderInterceptor{
         this.converters = converters;
         this.localization = localization;
         this.flash = flash;
-		this.method = method;
     }
     
-    public boolean accepts() {
+    public boolean accepts(ControllerMethod method) {
         return any(asList(method.getMethod().getParameterAnnotations()), hasAnnotation(Load.class));
     }
 
-    @BeforeCall
-    public void intercept(){
+    public void intercept(InterceptorStack stack, ControllerMethod method,
+			Object controllerInstance) throws InterceptionException{
     	
         Annotation[][] annotations = method.getMethod().getParameterAnnotations();
 
@@ -113,6 +115,7 @@ public class ParameterLoaderInterceptor{
         }
 
         flash.includeParameters(method, args);
+        stack.next(method, controllerInstance);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

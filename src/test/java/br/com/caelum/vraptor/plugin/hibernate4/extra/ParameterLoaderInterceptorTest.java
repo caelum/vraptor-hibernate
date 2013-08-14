@@ -52,18 +52,13 @@ public class ParameterLoaderInterceptorTest {
     private ParameterLoaderInterceptor interceptor;
     private @Mock InterceptorStack stack;
     private @Mock Object instance;
-//    private ControllerMethod method;
-//    private ControllerMethod methodOtherIdName;
-//    private ControllerMethod other;
-//    private ControllerMethod noId;
-//    private ControllerMethod methodWithoutLoad;
     private @Mock ControllerMethod method;
     
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        interceptor = new ParameterLoaderInterceptor(session, request, provider, result, converters, new MockLocalization(), flash,method);
+        interceptor = new ParameterLoaderInterceptor(session, request, provider, result, converters, new MockLocalization(), flash);
         when(method.getMethod()).thenReturn(getMethod("method", Entity.class));
 //        methodOtherIdName = DefaultResourceMethod.instanceFor(Resource.class, Resource.class.getMethod());
 //        other = DefaultResourceMethod.instanceFor(Resource.class, Resource.class.getMethod("other", OtherEntity.class, String.class));
@@ -75,14 +70,14 @@ public class ParameterLoaderInterceptorTest {
     
     @Test
     public void shouldAcceptsIfHasLoadAnnotation(){
-        assertTrue(interceptor.accepts());
+        assertTrue(interceptor.accepts(method));
     }
 
 
     @Test
     public void shouldNotAcceptIfHasNoLoadAnnotation() {
     	when(method.getMethod()).thenReturn(getMethod("methodWithoutLoad"));
-        assertFalse(interceptor.accepts());
+        assertFalse(interceptor.accepts(method));
     }
 
     @Test
@@ -98,7 +93,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        interceptor.intercept();
+        interceptor.intercept(stack,method,instance);
 
         verify(request).setAttribute("entity", expectedEntity);
     }
@@ -118,7 +113,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        interceptor.intercept();
+        interceptor.intercept(stack,method,instance);
 
         verify(request).setAttribute("entity", expectedEntity);
     }
@@ -140,7 +135,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(String.class);
 
-        interceptor.intercept();
+        interceptor.intercept(stack,method,instance);
 
         verify(request).setAttribute("entity", expectedEntity);
     }
@@ -162,7 +157,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
         
-        interceptor.intercept();
+        interceptor.intercept(stack,method,instance);
 
         assertThat(args[0], is((Object) expectedEntity));
 
@@ -180,7 +175,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        interceptor.intercept();
+        interceptor.intercept(stack,method,instance);
 
         verify(request, never()).setAttribute(eq("entity"), any());
         verify(result).notFound();
@@ -198,7 +193,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        interceptor.intercept();
+        interceptor.intercept(stack,method,instance);
 
         verify(request, never()).setAttribute(eq("entity"), any());
         verify(result).notFound();
@@ -217,7 +212,7 @@ public class ParameterLoaderInterceptorTest {
         fail().when(request).setAttribute(eq("entity"), any());
         fail().when(result).notFound();
 
-        interceptor.intercept();       
+        interceptor.intercept(stack,method,instance);       
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -235,7 +230,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        interceptor.intercept();
+        interceptor.intercept(stack,method,instance);
     }
 
 
