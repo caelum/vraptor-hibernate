@@ -15,35 +15,33 @@
  */
 package br.com.caelum.vraptor.plugin.hibernate4.extra;
 
-import static br.com.caelum.vraptor.util.collections.Filters.hasAnnotation;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.Iterables.any;
-import static com.google.common.collect.Iterables.isEmpty;
-import static java.util.Arrays.asList;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.Session;
 import org.hibernate.type.Type;
 
-import br.com.caelum.vraptor.Converter;
-import br.com.caelum.vraptor.InterceptionException;
-import br.com.caelum.vraptor.Intercepts;
-import br.com.caelum.vraptor.Lazy;
-import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.core.Converters;
-import br.com.caelum.vraptor.core.InterceptorStack;
-import br.com.caelum.vraptor.core.Localization;
-import br.com.caelum.vraptor.http.ParameterNameProvider;
-import br.com.caelum.vraptor.interceptor.Interceptor;
-import br.com.caelum.vraptor.interceptor.ParametersInstantiatorInterceptor;
-import br.com.caelum.vraptor.resource.ResourceMethod;
-import br.com.caelum.vraptor.view.FlashScope;
+import br.com.caelum.vraptor4.BeforeCall;
+import br.com.caelum.vraptor4.Converter;
+import br.com.caelum.vraptor4.Intercepts;
+import br.com.caelum.vraptor4.Result;
+import br.com.caelum.vraptor4.core.Converters;
+import br.com.caelum.vraptor4.core.Localization;
+import br.com.caelum.vraptor4.http.ParameterNameProvider;
+import br.com.caelum.vraptor4.interceptor.ParametersInstantiatorInterceptor;
+import br.com.caelum.vraptor4.restfulie.controller.ControllerMethod;
+import br.com.caelum.vraptor4.view.FlashScope;
 
 import com.google.common.collect.Iterables;
+
+import static br.com.caelum.vraptor4.util.collections.Filters.hasAnnotation;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Iterables.any;
+import static com.google.common.collect.Iterables.isEmpty;
+import static java.util.Arrays.asList;
 
 /**
  * Interceptor that loads given entity from the database.
@@ -55,19 +53,24 @@ import com.google.common.collect.Iterables;
  *
  */
 @Intercepts(before=ParametersInstantiatorInterceptor.class)
-@Lazy
-public class ParameterLoaderInterceptor implements Interceptor {
+public class ParameterLoaderInterceptor{
 
-    private final Session session;
-    private final HttpServletRequest request;
-    private final ParameterNameProvider provider;
-    private final Result result;
-    private final Converters converters;
-    private final Localization localization;
-    private final FlashScope flash;
+    private Session session;
+    private HttpServletRequest request;
+    private ParameterNameProvider provider;
+    private Result result;
+    private Converters converters;
+    private Localization localization;
+    private FlashScope flash;
+	private ControllerMethod method;
 
+    @Deprecated //CDI eyes only
+	public ParameterLoaderInterceptor() {
+	}
+    
+    @Inject
     public ParameterLoaderInterceptor(Session session, HttpServletRequest request, ParameterNameProvider provider,
-            Result result, Converters converters, Localization localization, FlashScope flash) {
+            Result result, Converters converters, Localization localization, FlashScope flash,ControllerMethod method) {
         this.session = session;
         this.request = request;
         this.provider = provider;
@@ -75,14 +78,16 @@ public class ParameterLoaderInterceptor implements Interceptor {
         this.converters = converters;
         this.localization = localization;
         this.flash = flash;
+		this.method = method;
     }
-
-    public boolean accepts(ResourceMethod method) {
+    
+    public boolean accepts() {
         return any(asList(method.getMethod().getParameterAnnotations()), hasAnnotation(Load.class));
     }
 
-    public void intercept(InterceptorStack stack, ResourceMethod method, Object resourceInstance)
-        throws InterceptionException {
+    @BeforeCall
+    public void intercept(){
+    	
         Annotation[][] annotations = method.getMethod().getParameterAnnotations();
 
         final String[] names = provider.parameterNamesFor(method.getMethod());
@@ -108,7 +113,6 @@ public class ParameterLoaderInterceptor implements Interceptor {
         }
 
         flash.includeParameters(method, args);
-        stack.next(method, resourceInstance);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

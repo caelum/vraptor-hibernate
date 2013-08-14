@@ -16,14 +16,6 @@
  */
 package br.com.caelum.vraptor.plugin.hibernate4;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.stub;
-import static org.mockito.Mockito.when;
-
 import java.net.URL;
 
 import org.hibernate.Session;
@@ -33,7 +25,14 @@ import org.hibernate.service.ServiceRegistry;
 import org.junit.Test;
 
 import br.com.caelum.vraptor.environment.Environment;
-import br.com.caelum.vraptor.ioc.Container;
+import br.com.caelum.vraptor4.ioc.Container;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.stub;
+import static org.mockito.Mockito.when;
 
 public class PluginTest {
 

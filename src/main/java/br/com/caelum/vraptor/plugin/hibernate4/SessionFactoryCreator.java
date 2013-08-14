@@ -18,29 +18,36 @@ package br.com.caelum.vraptor.plugin.hibernate4;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.interceptor.Interceptor;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
-import br.com.caelum.vraptor.ioc.ApplicationScoped;
-import br.com.caelum.vraptor.ioc.Component;
-import br.com.caelum.vraptor.ioc.ComponentFactory;
+import br.com.caelum.vraptor4.ioc.ApplicationScoped;
 
 /**
  * Creates a {@link SessionFactory} object, once when application starts.
  * 
  * @author Otávio Scherer Garcia
  */
-@Component
 @ApplicationScoped
-public class SessionFactoryCreator
-    implements ComponentFactory<SessionFactory> {
+@Priority(Interceptor.Priority.LIBRARY_BEFORE + 500)
+public class SessionFactoryCreator{
 
-    private final Configuration cfg;
-    private final ServiceRegistry serviceRegistry;
+    private Configuration cfg;
+    private ServiceRegistry serviceRegistry;
     private SessionFactory sessionFactory;
 
+    @Deprecated
+	//CDI eyes only
+	public SessionFactoryCreator() {
+	}
+    
+    @Inject
     public SessionFactoryCreator(Configuration cfg, ServiceRegistry serviceRegistry) {
         this.cfg = cfg;
         this.serviceRegistry = serviceRegistry;
@@ -64,6 +71,7 @@ public class SessionFactoryCreator
         }
     }
 
+    @Produces
     public SessionFactory getInstance() {
         return sessionFactory;
     }

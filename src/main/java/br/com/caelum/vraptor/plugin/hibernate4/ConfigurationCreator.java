@@ -19,28 +19,35 @@ package br.com.caelum.vraptor.plugin.hibernate4;
 import java.net.URL;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.interceptor.Interceptor;
 
 import org.hibernate.cfg.Configuration;
 
 import br.com.caelum.vraptor.environment.Environment;
-import br.com.caelum.vraptor.ioc.ApplicationScoped;
-import br.com.caelum.vraptor.ioc.Component;
-import br.com.caelum.vraptor.ioc.ComponentFactory;
-import br.com.caelum.vraptor.ioc.Container;
+import br.com.caelum.vraptor4.ioc.ApplicationScoped;
+import br.com.caelum.vraptor4.ioc.Container;
 
 /**
  * Creates a Hibernate {@link Configuration}, once when application starts.
  * 
  * @author Otávio Scherer Garcia
  */
-@Component
 @ApplicationScoped
-public class ConfigurationCreator
-    implements ComponentFactory<Configuration> {
+@Alternative
+@Priority(Interceptor.Priority.LIBRARY_BEFORE + 500)
+public class ConfigurationCreator{
 
     private Configuration cfg;
     private Container container;
 
+    @Deprecated //CDI eyes only
+	public ConfigurationCreator() {}
+    
+    @Inject
     public ConfigurationCreator(Container container) {
         this.container = container;
     }
@@ -86,6 +93,7 @@ public class ConfigurationCreator
 
     }
 
+    @Produces
     public Configuration getInstance() {
         return cfg;
     }

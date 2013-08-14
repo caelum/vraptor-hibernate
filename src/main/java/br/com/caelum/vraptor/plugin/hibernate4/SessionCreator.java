@@ -18,27 +18,34 @@ package br.com.caelum.vraptor.plugin.hibernate4;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.interceptor.Interceptor;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import br.com.caelum.vraptor.ioc.Component;
-import br.com.caelum.vraptor.ioc.ComponentFactory;
-import br.com.caelum.vraptor.ioc.RequestScoped;
+import br.com.caelum.vraptor4.ioc.RequestScoped;
 
 /**
  * Creates a Hibernate {@link Session}, once per request.
  * 
  * @author Otávio Scherer Garcia
  */
-@Component
 @RequestScoped
-public class SessionCreator
-    implements ComponentFactory<Session> {
+@Priority(Interceptor.Priority.LIBRARY_BEFORE + 500)
+public class SessionCreator{
 
-    private final SessionFactory factory;
+    private SessionFactory factory;
     private Session session;
 
+    @Deprecated
+	//CDI eyes only
+	public SessionCreator() {
+	}
+    
+    @Inject
     public SessionCreator(SessionFactory factory) {
         this.factory = factory;
     }
@@ -60,7 +67,8 @@ public class SessionCreator
             session.close();
         }
     }
-
+    
+    @Produces
     public Session getInstance() {
         return session;
     }

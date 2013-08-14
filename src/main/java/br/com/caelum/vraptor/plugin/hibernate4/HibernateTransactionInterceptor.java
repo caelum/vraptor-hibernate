@@ -16,14 +16,15 @@
  */
 package br.com.caelum.vraptor.plugin.hibernate4;
 
+import javax.inject.Inject;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import br.com.caelum.vraptor.Intercepts;
-import br.com.caelum.vraptor.Validator;
-import br.com.caelum.vraptor.core.InterceptorStack;
-import br.com.caelum.vraptor.interceptor.Interceptor;
-import br.com.caelum.vraptor.resource.ResourceMethod;
+import br.com.caelum.vraptor4.AroundCall;
+import br.com.caelum.vraptor4.Intercepts;
+import br.com.caelum.vraptor4.Validator;
+import br.com.caelum.vraptor4.interceptor.SimpleInterceptorStack;
 
 /**
  * An example of Hibernate Transaction management on VRaptor
@@ -31,22 +32,26 @@ import br.com.caelum.vraptor.resource.ResourceMethod;
  * @author Lucas Cavalcanti
  */
 @Intercepts
-public class HibernateTransactionInterceptor
-    implements Interceptor {
+public class HibernateTransactionInterceptor {
 
-    private final Session session;
-    private final Validator validator;
+    private Session session;
+    private Validator validator;
 
+    @Deprecated	//CDI eyes only
+	public HibernateTransactionInterceptor() {}
+    
+    @Inject
     public HibernateTransactionInterceptor(Session session, Validator validator) {
         this.session = session;
         this.validator = validator;
     }
 
-    public void intercept(InterceptorStack stack, ResourceMethod method, Object instance) {
+    @AroundCall
+    public void intercept(SimpleInterceptorStack stack) {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            stack.next(method, instance);
+            stack.next();
             if (!validator.hasErrors() && transaction.isActive()) {
                 transaction.commit();
             }
@@ -55,9 +60,5 @@ public class HibernateTransactionInterceptor
                 transaction.rollback();
             }
         }
-    }
-
-    public boolean accepts(ResourceMethod method) {
-        return true; // Will intercept all requests
     }
 }

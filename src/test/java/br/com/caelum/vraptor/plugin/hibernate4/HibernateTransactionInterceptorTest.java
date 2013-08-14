@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 package br.com.caelum.vraptor.plugin.hibernate4;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.Before;
@@ -27,17 +23,21 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import br.com.caelum.vraptor.Validator;
-import br.com.caelum.vraptor.core.InterceptorStack;
-import br.com.caelum.vraptor.resource.ResourceMethod;
+import br.com.caelum.vraptor4.Validator;
+import br.com.caelum.vraptor4.interceptor.SimpleInterceptorStack;
+import br.com.caelum.vraptor4.restfulie.controller.ControllerMethod;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class HibernateTransactionInterceptorTest {
 
     @Mock private Session session;
-    @Mock private InterceptorStack stack;
-    @Mock private ResourceMethod method;
+    @Mock private SimpleInterceptorStack stack;
+    @Mock private ControllerMethod method;
     @Mock private Transaction transaction;
-    private Object instance;
     @Mock private Validator validator;
 
     @Before
@@ -52,11 +52,11 @@ public class HibernateTransactionInterceptorTest {
         when(session.beginTransaction()).thenReturn(transaction);
         when(transaction.isActive()).thenReturn(true);
 
-        interceptor.intercept(stack, method, instance);
+        interceptor.intercept(stack);
 
         InOrder callOrder = inOrder(session, transaction, stack);
         callOrder.verify(session).beginTransaction();
-        callOrder.verify(stack).next(method, instance);
+        callOrder.verify(stack).next();
         callOrder.verify(transaction).commit();
     }
 
@@ -66,9 +66,13 @@ public class HibernateTransactionInterceptorTest {
 
         when(session.beginTransaction()).thenReturn(transaction);
         when(transaction.isActive()).thenReturn(true);
-
-        interceptor.intercept(stack, method, instance);
-
+        doThrow(new RuntimeException()).when(stack).next();
+        try{
+        	interceptor.intercept(stack);
+        }catch(Exception e){
+        	//nothing
+       	}
+        verify(transaction,never()).commit();
         verify(transaction).rollback();
     }
 
