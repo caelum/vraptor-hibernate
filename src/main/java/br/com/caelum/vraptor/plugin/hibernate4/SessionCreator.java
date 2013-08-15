@@ -34,8 +34,7 @@ import br.com.caelum.vraptor4.ioc.RequestScoped;
  * @author Otávio Scherer Garcia
  */
 @RequestScoped
-@Priority(Interceptor.Priority.LIBRARY_BEFORE + 500)
-public class SessionCreator{
+public class SessionCreator {
 
     private SessionFactory factory;
     private Session session;

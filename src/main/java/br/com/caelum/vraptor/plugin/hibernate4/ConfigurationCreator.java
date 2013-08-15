@@ -37,8 +37,6 @@ import br.com.caelum.vraptor4.ioc.Container;
  * @author Otávio Scherer Garcia
  */
 @ApplicationScoped
-@Alternative
-@Priority(Interceptor.Priority.LIBRARY_BEFORE + 500)
 public class ConfigurationCreator{
 
     private Configuration cfg;

@@ -35,7 +35,6 @@ import br.com.caelum.vraptor4.ioc.ApplicationScoped;
  * @author Otávio Scherer Garcia
  */
 @ApplicationScoped
-@Priority(Interceptor.Priority.LIBRARY_BEFORE + 500)
 public class SessionFactoryCreator{
 
     private Configuration cfg;
