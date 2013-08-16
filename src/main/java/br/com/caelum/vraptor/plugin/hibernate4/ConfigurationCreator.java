@@ -19,11 +19,8 @@ package br.com.caelum.vraptor.plugin.hibernate4;
 import java.net.URL;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Priority;
-import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.interceptor.Interceptor;
 
 import org.hibernate.cfg.Configuration;
 

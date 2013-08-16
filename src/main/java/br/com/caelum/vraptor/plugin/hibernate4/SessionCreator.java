@@ -18,10 +18,8 @@ package br.com.caelum.vraptor.plugin.hibernate4;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.annotation.Priority;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.interceptor.Interceptor;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
