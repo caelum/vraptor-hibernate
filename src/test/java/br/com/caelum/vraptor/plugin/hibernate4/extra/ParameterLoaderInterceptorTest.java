@@ -1,5 +1,16 @@
 package br.com.caelum.vraptor.plugin.hibernate4.extra;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.lang.reflect.Method;
 
 import javax.persistence.Id;
@@ -16,26 +27,14 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Stubber;
 
 import br.com.caelum.vraptor4.Result;
+import br.com.caelum.vraptor4.controller.ControllerMethod;
 import br.com.caelum.vraptor4.converter.LongConverter;
 import br.com.caelum.vraptor4.converter.StringConverter;
 import br.com.caelum.vraptor4.core.Converters;
 import br.com.caelum.vraptor4.core.InterceptorStack;
 import br.com.caelum.vraptor4.http.ParameterNameProvider;
-import br.com.caelum.vraptor4.restfulie.controller.ControllerMethod;
 import br.com.caelum.vraptor4.util.test.MockLocalization;
 import br.com.caelum.vraptor4.view.FlashScope;
-import static org.hamcrest.Matchers.is;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class ParameterLoaderInterceptorTest {
 

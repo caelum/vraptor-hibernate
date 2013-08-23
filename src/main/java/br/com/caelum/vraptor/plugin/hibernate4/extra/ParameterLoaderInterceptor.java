@@ -15,6 +15,12 @@
  */
 package br.com.caelum.vraptor.plugin.hibernate4.extra;
 
+import static br.com.caelum.vraptor4.util.collections.Filters.hasAnnotation;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Iterables.any;
+import static com.google.common.collect.Iterables.isEmpty;
+import static java.util.Arrays.asList;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
@@ -24,27 +30,20 @@ import javax.servlet.http.HttpServletRequest;
 import org.hibernate.Session;
 import org.hibernate.type.Type;
 
-import br.com.caelum.vraptor4.BeforeCall;
 import br.com.caelum.vraptor4.Converter;
 import br.com.caelum.vraptor4.InterceptionException;
 import br.com.caelum.vraptor4.Intercepts;
 import br.com.caelum.vraptor4.Result;
+import br.com.caelum.vraptor4.controller.ControllerMethod;
 import br.com.caelum.vraptor4.core.Converters;
 import br.com.caelum.vraptor4.core.InterceptorStack;
 import br.com.caelum.vraptor4.core.Localization;
 import br.com.caelum.vraptor4.http.ParameterNameProvider;
 import br.com.caelum.vraptor4.interceptor.Interceptor;
 import br.com.caelum.vraptor4.interceptor.ParametersInstantiatorInterceptor;
-import br.com.caelum.vraptor4.restfulie.controller.ControllerMethod;
 import br.com.caelum.vraptor4.view.FlashScope;
 
 import com.google.common.collect.Iterables;
-
-import static br.com.caelum.vraptor4.util.collections.Filters.hasAnnotation;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.Iterables.any;
-import static com.google.common.collect.Iterables.isEmpty;
-import static java.util.Arrays.asList;
 
 /**
  * Interceptor that loads given entity from the database.
