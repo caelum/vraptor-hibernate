@@ -15,11 +15,12 @@
  */
 package br.com.caelum.vraptor.plugin.hibernate4.extra;
 
-import static br.com.caelum.vraptor4.util.collections.Filters.hasAnnotation;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.any;
 import static com.google.common.collect.Iterables.isEmpty;
 import static java.util.Arrays.asList;
+import static com.google.common.base.Predicates.instanceOf;
+
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -30,19 +31,20 @@ import javax.servlet.http.HttpServletRequest;
 import org.hibernate.Session;
 import org.hibernate.type.Type;
 
-import br.com.caelum.vraptor4.Converter;
-import br.com.caelum.vraptor4.InterceptionException;
-import br.com.caelum.vraptor4.Intercepts;
-import br.com.caelum.vraptor4.Result;
-import br.com.caelum.vraptor4.controller.ControllerMethod;
-import br.com.caelum.vraptor4.core.Converters;
-import br.com.caelum.vraptor4.core.InterceptorStack;
-import br.com.caelum.vraptor4.core.Localization;
-import br.com.caelum.vraptor4.http.ParameterNameProvider;
-import br.com.caelum.vraptor4.interceptor.Interceptor;
-import br.com.caelum.vraptor4.interceptor.ParametersInstantiatorInterceptor;
-import br.com.caelum.vraptor4.view.FlashScope;
+import br.com.caelum.vraptor.Converter;
+import br.com.caelum.vraptor.InterceptionException;
+import br.com.caelum.vraptor.Intercepts;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.controller.ControllerMethod;
+import br.com.caelum.vraptor.core.Converters;
+import br.com.caelum.vraptor.core.InterceptorStack;
+import br.com.caelum.vraptor.core.Localization;
+import br.com.caelum.vraptor.http.ParameterNameProvider;
+import br.com.caelum.vraptor.interceptor.Interceptor;
+import br.com.caelum.vraptor.interceptor.ParametersInstantiatorInterceptor;
+import br.com.caelum.vraptor.view.FlashScope;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 /**
@@ -86,7 +88,7 @@ public class ParameterLoaderInterceptor implements Interceptor{
         return any(asList(method.getMethod().getParameterAnnotations()), hasAnnotation(Load.class));
     }
 
-    public void intercept(InterceptorStack stack, ControllerMethod method,
+	public void intercept(InterceptorStack stack, ControllerMethod method,
 			Object controllerInstance) throws InterceptionException{
     	
         Annotation[][] annotations = method.getMethod().getParameterAnnotations();
@@ -139,4 +141,12 @@ public class ParameterLoaderInterceptor implements Interceptor{
     private boolean hasLoadAnnotation(Annotation[] annotations) {
         return !isEmpty(Iterables.filter(asList(annotations), Load.class));
     }
+    
+    private Predicate<? super Annotation[]> hasAnnotation(final Class<?> annotation) {
+    	return new Predicate<Annotation[]>() {
+            public boolean apply(Annotation[] param) {
+                return any(asList(param), instanceOf(annotation));
+            }
+        };
+	}
 }

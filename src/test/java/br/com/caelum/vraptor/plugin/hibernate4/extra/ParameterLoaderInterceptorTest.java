@@ -26,15 +26,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Stubber;
 
-import br.com.caelum.vraptor4.Result;
-import br.com.caelum.vraptor4.controller.ControllerMethod;
-import br.com.caelum.vraptor4.converter.LongConverter;
-import br.com.caelum.vraptor4.converter.StringConverter;
-import br.com.caelum.vraptor4.core.Converters;
-import br.com.caelum.vraptor4.core.InterceptorStack;
-import br.com.caelum.vraptor4.http.ParameterNameProvider;
-import br.com.caelum.vraptor4.util.test.MockLocalization;
-import br.com.caelum.vraptor4.view.FlashScope;
+import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.controller.ControllerMethod;
+import br.com.caelum.vraptor.converter.LongConverter;
+import br.com.caelum.vraptor.converter.StringConverter;
+import br.com.caelum.vraptor.core.Converters;
+import br.com.caelum.vraptor.core.InterceptorStack;
+import br.com.caelum.vraptor.http.ParameterNameProvider;
+import br.com.caelum.vraptor.util.test.MockLocalization;
+import br.com.caelum.vraptor.view.FlashScope;
 
 public class ParameterLoaderInterceptorTest {
 

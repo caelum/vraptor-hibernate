@@ -18,14 +18,13 @@ package br.com.caelum.vraptor.plugin.hibernate4;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-
-import br.com.caelum.vraptor4.ioc.ApplicationScoped;
 
 /**
  * Creates a {@link SessionFactory} object, once when application starts.

@@ -21,10 +21,10 @@ import javax.inject.Inject;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import br.com.caelum.vraptor4.AroundCall;
-import br.com.caelum.vraptor4.Intercepts;
-import br.com.caelum.vraptor4.Validator;
-import br.com.caelum.vraptor4.interceptor.SimpleInterceptorStack;
+import br.com.caelum.vraptor.AroundCall;
+import br.com.caelum.vraptor.Intercepts;
+import br.com.caelum.vraptor.Validator;
+import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 
 /**
  * An example of Hibernate Transaction management on VRaptor
