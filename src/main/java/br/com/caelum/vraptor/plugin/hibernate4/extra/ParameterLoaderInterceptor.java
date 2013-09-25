@@ -15,13 +15,6 @@
  */
 package br.com.caelum.vraptor.plugin.hibernate4.extra;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.Iterables.any;
-import static com.google.common.collect.Iterables.isEmpty;
-import static java.util.Arrays.asList;
-import static com.google.common.base.Predicates.instanceOf;
-
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
@@ -38,7 +31,6 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.controller.ControllerMethod;
 import br.com.caelum.vraptor.core.Converters;
 import br.com.caelum.vraptor.core.InterceptorStack;
-import br.com.caelum.vraptor.core.Localization;
 import br.com.caelum.vraptor.http.ParameterNameProvider;
 import br.com.caelum.vraptor.interceptor.Interceptor;
 import br.com.caelum.vraptor.interceptor.ParametersInstantiatorInterceptor;
@@ -46,6 +38,12 @@ import br.com.caelum.vraptor.view.FlashScope;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Predicates.instanceOf;
+import static com.google.common.collect.Iterables.any;
+import static com.google.common.collect.Iterables.isEmpty;
+import static java.util.Arrays.asList;
 
 /**
  * Interceptor that loads given entity from the database.
@@ -64,9 +62,7 @@ public class ParameterLoaderInterceptor implements Interceptor{
     private ParameterNameProvider provider;
     private Result result;
     private Converters converters;
-    private Localization localization;
     private FlashScope flash;
-	private ControllerMethod method;
 
     @Deprecated //CDI eyes only
 	public ParameterLoaderInterceptor() {
@@ -74,13 +70,12 @@ public class ParameterLoaderInterceptor implements Interceptor{
     
     @Inject
     public ParameterLoaderInterceptor(Session session, HttpServletRequest request, ParameterNameProvider provider,
-            Result result, Converters converters, Localization localization, FlashScope flash) {
+            Result result, Converters converters, FlashScope flash) {
         this.session = session;
         this.request = request;
         this.provider = provider;
         this.result = result;
         this.converters = converters;
-        this.localization = localization;
         this.flash = flash;
     }
     
@@ -134,7 +129,7 @@ public class ParameterLoaderInterceptor implements Interceptor{
         checkArgument(converter != null, "Entity %s id type %s must have a converter", 
                 type.getSimpleName(), idType);
 
-        Serializable id = (Serializable) converter.convert(parameter, type, localization.getBundle());
+        Serializable id = (Serializable) converter.convert(parameter, type);
         return session.get(type, id);
     }
 

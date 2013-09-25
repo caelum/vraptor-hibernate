@@ -1,16 +1,5 @@
 package br.com.caelum.vraptor.plugin.hibernate4.extra;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.lang.reflect.Method;
 
 import javax.persistence.Id;
@@ -33,8 +22,19 @@ import br.com.caelum.vraptor.converter.StringConverter;
 import br.com.caelum.vraptor.core.Converters;
 import br.com.caelum.vraptor.core.InterceptorStack;
 import br.com.caelum.vraptor.http.ParameterNameProvider;
-import br.com.caelum.vraptor.util.test.MockLocalization;
 import br.com.caelum.vraptor.view.FlashScope;
+import static org.hamcrest.Matchers.is;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ParameterLoaderInterceptorTest {
 
@@ -57,7 +57,7 @@ public class ParameterLoaderInterceptorTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        interceptor = new ParameterLoaderInterceptor(session, request, provider, result, converters, new MockLocalization(), flash);
+        interceptor = new ParameterLoaderInterceptor(session, request, provider, result, converters, flash);
         when(method.getMethod()).thenReturn(getMethod("method", Entity.class));
 //        methodOtherIdName = DefaultResourceMethod.instanceFor(Resource.class, Resource.class.getMethod());
 //        other = DefaultResourceMethod.instanceFor(Resource.class, Resource.class.getMethod("other", OtherEntity.class, String.class));
