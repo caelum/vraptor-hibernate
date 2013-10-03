@@ -25,7 +25,9 @@ import org.mockito.MockitoAnnotations;
 
 import br.com.caelum.vraptor.Validator;
 import br.com.caelum.vraptor.controller.ControllerMethod;
+import br.com.caelum.vraptor.http.MutableResponse;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
@@ -39,15 +41,18 @@ public class HibernateTransactionInterceptorTest {
     @Mock private ControllerMethod method;
     @Mock private Transaction transaction;
     @Mock private Validator validator;
+    @Mock private MutableResponse response;
+	private HibernateTransactionInterceptor interceptor;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        interceptor = new HibernateTransactionInterceptor(session, validator, response);
     }
 
     @Test
     public void shouldStartAndCommitTransaction() throws Exception {
-        HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
+        HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator, response);
 
         when(session.beginTransaction()).thenReturn(transaction);
         when(transaction.isActive()).thenReturn(true);
@@ -62,7 +67,6 @@ public class HibernateTransactionInterceptorTest {
 
     @Test
     public void shouldRollbackTransactionIfStillActiveWhenExecutionFinishes() throws Exception {
-        HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
 
         when(session.beginTransaction()).thenReturn(transaction);
         when(transaction.isActive()).thenReturn(true);
@@ -75,5 +79,50 @@ public class HibernateTransactionInterceptorTest {
         verify(transaction,never()).commit();
         verify(transaction).rollback();
     }
+    
+	@Test
+	public void shouldRollbackIfValidatorHasErrors() {
+
+		when(session.beginTransaction()).thenReturn(transaction);
+		when(transaction.isActive()).thenReturn(true);
+		when(validator.hasErrors()).thenReturn(true);
+
+		interceptor.intercept(stack);
+
+		verify(transaction).rollback();
+	}
+    
+	@Test
+	public void shouldCommitIfValidatorHasNoErrors() {
+
+		when(session.beginTransaction()).thenReturn(transaction);
+		when(transaction.isActive()).thenReturn(true);
+		when(validator.hasErrors()).thenReturn(false);
+
+		interceptor.intercept(stack);
+
+		verify(transaction).commit();
+	}
+    
+	@Test
+	public void doNothingIfHasNoActiveTransation() {
+
+		when(session.beginTransaction()).thenReturn(transaction);
+		when(transaction.isActive()).thenReturn(false);
+
+		interceptor.intercept(stack);
+
+		verify(transaction, never()).rollback();
+	}
+    
+	@Test
+	public void shouldConfigureARedirectListener() {
+
+		when(session.beginTransaction()).thenReturn(transaction);
+
+		interceptor.intercept(stack);
+
+		verify(response).addRedirectListener(any(MutableResponse.RedirectListener.class));
+	}
 
 }
