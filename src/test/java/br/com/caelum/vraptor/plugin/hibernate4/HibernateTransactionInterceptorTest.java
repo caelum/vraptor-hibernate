@@ -42,10 +42,12 @@ public class HibernateTransactionInterceptorTest {
     @Mock private Transaction transaction;
     @Mock private Validator validator;
     @Mock private MutableResponse response;
+	private HibernateTransactionInterceptor interceptor;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        interceptor = new HibernateTransactionInterceptor(session, validator, response);
     }
 
     @Test
@@ -65,7 +67,6 @@ public class HibernateTransactionInterceptorTest {
 
     @Test
     public void shouldRollbackTransactionIfStillActiveWhenExecutionFinishes() throws Exception {
-        HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator, response);
 
         when(session.beginTransaction()).thenReturn(transaction);
         when(transaction.isActive()).thenReturn(true);
@@ -81,7 +82,6 @@ public class HibernateTransactionInterceptorTest {
     
 	@Test
 	public void shouldConfigureARedirectListener() {
-		HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator, response);
 
 		when(session.beginTransaction()).thenReturn(transaction);
 
