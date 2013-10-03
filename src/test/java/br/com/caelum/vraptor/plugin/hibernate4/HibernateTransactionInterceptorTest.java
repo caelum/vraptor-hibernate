@@ -81,6 +81,41 @@ public class HibernateTransactionInterceptorTest {
     }
     
 	@Test
+	public void shouldRollbackIfValidatorHasErrors() {
+
+		when(session.beginTransaction()).thenReturn(transaction);
+		when(transaction.isActive()).thenReturn(true);
+		when(validator.hasErrors()).thenReturn(true);
+
+		interceptor.intercept(stack);
+
+		verify(transaction).rollback();
+	}
+    
+	@Test
+	public void shouldCommitIfValidatorHasNoErrors() {
+
+		when(session.beginTransaction()).thenReturn(transaction);
+		when(transaction.isActive()).thenReturn(true);
+		when(validator.hasErrors()).thenReturn(false);
+
+		interceptor.intercept(stack);
+
+		verify(transaction).commit();
+	}
+    
+	@Test
+	public void doNothingIfHasNoActiveTransation() {
+
+		when(session.beginTransaction()).thenReturn(transaction);
+		when(transaction.isActive()).thenReturn(false);
+
+		interceptor.intercept(stack);
+
+		verify(transaction, never()).rollback();
+	}
+    
+	@Test
 	public void shouldConfigureARedirectListener() {
 
 		when(session.beginTransaction()).thenReturn(transaction);
