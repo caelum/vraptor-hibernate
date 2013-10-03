@@ -24,6 +24,7 @@ import org.hibernate.Transaction;
 import br.com.caelum.vraptor.AroundCall;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Validator;
+import br.com.caelum.vraptor.http.MutableResponse;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 
 /**
@@ -36,29 +37,51 @@ public class HibernateTransactionInterceptor {
 
     private Session session;
     private Validator validator;
+    private MutableResponse response;
 
     @Deprecated	//CDI eyes only
 	public HibernateTransactionInterceptor() {}
     
     @Inject
-    public HibernateTransactionInterceptor(Session session, Validator validator) {
+    public HibernateTransactionInterceptor(Session session, Validator validator, MutableResponse response) {
         this.session = session;
         this.validator = validator;
+		this.response = response;
     }
 
     @AroundCall
     public void intercept(SimpleInterceptorStack stack) {
+    	
+        addRedirectListener();
+    	
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
             stack.next();
-            if (!validator.hasErrors() && transaction.isActive()) {
-                transaction.commit();
-            }
+            commit(transaction);
         } finally {
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
         }
     }
+    
+    private void commit(Transaction transaction) {
+		if (!validator.hasErrors() && transaction.isActive()) {
+			transaction.commit();
+		}
+	}
+
+	/**
+	 * We force the commit before the redirect, this way we can abort the
+	 * redirect if a database error occurs.
+	 */
+	private void addRedirectListener() {
+		response.addRedirectListener(new MutableResponse.RedirectListener() {
+			@Override
+			public void beforeRedirect() {
+				commit(session.getTransaction());
+			}
+		});
+	}
 }

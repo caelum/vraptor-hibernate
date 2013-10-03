@@ -25,7 +25,9 @@ import org.mockito.MockitoAnnotations;
 
 import br.com.caelum.vraptor.Validator;
 import br.com.caelum.vraptor.controller.ControllerMethod;
+import br.com.caelum.vraptor.http.MutableResponse;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
@@ -39,6 +41,7 @@ public class HibernateTransactionInterceptorTest {
     @Mock private ControllerMethod method;
     @Mock private Transaction transaction;
     @Mock private Validator validator;
+    @Mock private MutableResponse response;
 
     @Before
     public void setUp() {
@@ -47,7 +50,7 @@ public class HibernateTransactionInterceptorTest {
 
     @Test
     public void shouldStartAndCommitTransaction() throws Exception {
-        HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
+        HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator, response);
 
         when(session.beginTransaction()).thenReturn(transaction);
         when(transaction.isActive()).thenReturn(true);
@@ -62,7 +65,7 @@ public class HibernateTransactionInterceptorTest {
 
     @Test
     public void shouldRollbackTransactionIfStillActiveWhenExecutionFinishes() throws Exception {
-        HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
+        HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator, response);
 
         when(session.beginTransaction()).thenReturn(transaction);
         when(transaction.isActive()).thenReturn(true);
@@ -75,5 +78,16 @@ public class HibernateTransactionInterceptorTest {
         verify(transaction,never()).commit();
         verify(transaction).rollback();
     }
+    
+	@Test
+	public void shouldConfigureARedirectListener() {
+		HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator, response);
+
+		when(session.beginTransaction()).thenReturn(transaction);
+
+		interceptor.intercept(stack);
+
+		verify(response).addRedirectListener(any(MutableResponse.RedirectListener.class));
+	}
 
 }
