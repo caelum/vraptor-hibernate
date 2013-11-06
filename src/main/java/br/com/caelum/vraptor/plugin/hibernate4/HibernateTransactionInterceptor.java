@@ -23,9 +23,9 @@ import org.hibernate.Transaction;
 
 import br.com.caelum.vraptor.AroundCall;
 import br.com.caelum.vraptor.Intercepts;
-import br.com.caelum.vraptor.Validator;
 import br.com.caelum.vraptor.http.MutableResponse;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
+import br.com.caelum.vraptor.validator.Validator;
 
 /**
  * An example of Hibernate Transaction management on VRaptor

@@ -15,8 +15,15 @@
  */
 package br.com.caelum.vraptor.plugin.hibernate4.extra;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Predicates.instanceOf;
+import static com.google.common.collect.Iterables.any;
+import static com.google.common.collect.Iterables.isEmpty;
+import static java.util.Arrays.asList;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -24,13 +31,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.hibernate.Session;
 import org.hibernate.type.Type;
 
-import br.com.caelum.vraptor.Converter;
 import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.controller.ControllerMethod;
+import br.com.caelum.vraptor.converter.Converter;
 import br.com.caelum.vraptor.core.Converters;
 import br.com.caelum.vraptor.core.InterceptorStack;
+import br.com.caelum.vraptor.http.Parameter;
 import br.com.caelum.vraptor.http.ParameterNameProvider;
 import br.com.caelum.vraptor.interceptor.Interceptor;
 import br.com.caelum.vraptor.interceptor.ParametersInstantiatorInterceptor;
@@ -38,12 +46,6 @@ import br.com.caelum.vraptor.view.FlashScope;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Predicates.instanceOf;
-import static com.google.common.collect.Iterables.any;
-import static com.google.common.collect.Iterables.isEmpty;
-import static java.util.Arrays.asList;
 
 /**
  * Interceptor that loads given entity from the database.
@@ -88,15 +90,17 @@ public class ParameterLoaderInterceptor implements Interceptor{
     	
         Annotation[][] annotations = method.getMethod().getParameterAnnotations();
 
-        final String[] names = provider.parameterNamesFor(method.getMethod());
+        final Parameter[] parameters = provider.parametersFor(method.getMethod());
         final Class<?>[] types = method.getMethod().getParameterTypes();
         final Object[] args = flash.consumeParameters(method);
 
-        for (int i = 0; i < names.length; i++) {
+        for (int i = 0; i < parameters.length; i++) {
             if (hasLoadAnnotation(annotations[i])) {
-                Object loaded = load(names[i], types[i]);
+                String name = parameters[i].getName();
+				Object loaded = load(name, types[i]);
+				System.out.println(name + " - " + loaded);
 
-                // TODO extract to method, so users can override behaviour
+                // TODO extract to method, so users can override behavior
                 if (loaded == null) {
                     result.notFound();
                     return;
@@ -105,7 +109,7 @@ public class ParameterLoaderInterceptor implements Interceptor{
                 if (args != null) {
                     args[i] = loaded;
                 } else {
-                    request.setAttribute(names[i], loaded);
+                    request.setAttribute(name, loaded);
                 }
             }
         }
