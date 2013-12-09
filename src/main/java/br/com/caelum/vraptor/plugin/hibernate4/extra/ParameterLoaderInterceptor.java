@@ -98,7 +98,6 @@ public class ParameterLoaderInterceptor implements Interceptor{
             if (hasLoadAnnotation(annotations[i])) {
                 String name = parameters[i].getName();
 				Object loaded = load(name, types[i]);
-				System.out.println(name + " - " + loaded);
 
                 // TODO extract to method, so users can override behavior
                 if (loaded == null) {
