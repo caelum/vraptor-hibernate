@@ -23,7 +23,6 @@ import static java.util.Arrays.asList;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +40,6 @@ import br.com.caelum.vraptor.core.InterceptorStack;
 import br.com.caelum.vraptor.http.Parameter;
 import br.com.caelum.vraptor.http.ParameterNameProvider;
 import br.com.caelum.vraptor.interceptor.Interceptor;
-import br.com.caelum.vraptor.interceptor.ParametersInstantiatorInterceptor;
 import br.com.caelum.vraptor.view.FlashScope;
 
 import com.google.common.base.Predicate;
@@ -54,9 +52,8 @@ import com.google.common.collect.Iterables;
  * @author Cecilia Fernandes
  * @author Otávio Scherer Garcia
  * @since vraptor 3.4.0
- *
  */
-@Intercepts(before=ParametersInstantiatorInterceptor.class)
+@Intercepts
 public class ParameterLoaderInterceptor implements Interceptor{
 
     private Session session;
