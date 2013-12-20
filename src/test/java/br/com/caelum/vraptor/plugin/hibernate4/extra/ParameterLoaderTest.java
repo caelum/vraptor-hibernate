@@ -1,9 +1,7 @@
 package br.com.caelum.vraptor.plugin.hibernate4.extra;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -36,11 +34,12 @@ import br.com.caelum.vraptor.converter.LongConverter;
 import br.com.caelum.vraptor.converter.StringConverter;
 import br.com.caelum.vraptor.core.Converters;
 import br.com.caelum.vraptor.core.InterceptorStack;
+import br.com.caelum.vraptor.events.ControllerMethodDiscovered;
 import br.com.caelum.vraptor.http.Parameter;
 import br.com.caelum.vraptor.http.ParameterNameProvider;
 import br.com.caelum.vraptor.view.FlashScope;
 
-public class ParameterLoaderInterceptorTest {
+public class ParameterLoaderTest {
 
     private @Mock SessionFactory sessionFactory;
     private @Mock ClassMetadata classMetadata;
@@ -52,7 +51,7 @@ public class ParameterLoaderInterceptorTest {
     private @Mock Converters converters;
     private @Mock FlashScope flash;
 
-    private ParameterLoaderInterceptor interceptor;
+    private ParameterLoader parameterLoader;
     private @Mock InterceptorStack stack;
     private @Mock Object instance;
     private @Mock ControllerMethod method;
@@ -61,28 +60,12 @@ public class ParameterLoaderInterceptorTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        interceptor = new ParameterLoaderInterceptor(session, request, provider, result, converters, flash);
+        parameterLoader = new ParameterLoader(session, request, provider, result, converters, flash);
         when(method.getMethod()).thenReturn(getMethod("method", Entity.class));
-//        methodOtherIdName = DefaultResourceMethod.instanceFor(Resource.class, Resource.class.getMethod());
-//        other = DefaultResourceMethod.instanceFor(Resource.class, Resource.class.getMethod("other", OtherEntity.class, String.class));
-//        noId = DefaultResourceMethod.instanceFor(Resource.class, Resource.class.getMethod("noId", NoIdEntity.class));
-
         when(converters.to(Long.class)).thenReturn(new LongConverter());
         when(converters.to(String.class)).thenReturn(new StringConverter());
     }
     
-    @Test
-    public void shouldAcceptsIfHasLoadAnnotation(){
-        assertTrue(interceptor.accepts(method));
-    }
-
-
-    @Test
-    public void shouldNotAcceptIfHasNoLoadAnnotation() {
-    	when(method.getMethod()).thenReturn(getMethod("methodWithoutLoad"));
-        assertFalse(interceptor.accepts(method));
-    }
-
     @Test
     public void shouldLoadEntityUsingId() throws Exception {
     	Parameter[] mocks = mockParameters(Arrays.asList("entity"));
@@ -98,7 +81,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        interceptor.intercept(stack,method,instance);
+        parameterLoader.load(new ControllerMethodDiscovered(method));
 
         verify(request).setAttribute("entity", expectedEntity);
     }
@@ -119,8 +102,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        interceptor.intercept(stack,method,instance);
-
+        parameterLoader.load(new ControllerMethodDiscovered(method));
         verify(request).setAttribute("entity", expectedEntity);
     }
 
@@ -152,8 +134,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(String.class);
 
-        interceptor.intercept(stack,method,instance);
-
+        parameterLoader.load(new ControllerMethodDiscovered(method));
         verify(request).setAttribute("entity", expectedEntity);
     }
 
@@ -175,8 +156,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
         
-        interceptor.intercept(stack,method,instance);
-
+        parameterLoader.load(new ControllerMethodDiscovered(method));
         assertThat(args[0], is((Object) expectedEntity));
 
         verify(flash).includeParameters(method, args);
@@ -194,8 +174,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        interceptor.intercept(stack,method,instance);
-
+        parameterLoader.load(new ControllerMethodDiscovered(method));
         verify(request, never()).setAttribute(eq("entity"), any());
         verify(result).notFound();
     }
@@ -213,8 +192,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        interceptor.intercept(stack,method,instance);
-
+        parameterLoader.load(new ControllerMethodDiscovered(method));
         verify(request, never()).setAttribute(eq("entity"), any());
         verify(result).notFound();
     }
@@ -233,7 +211,7 @@ public class ParameterLoaderInterceptorTest {
         fail().when(request).setAttribute(eq("entity"), any());
         fail().when(result).notFound();
 
-        interceptor.intercept(stack,method,instance);       
+        parameterLoader.load(new ControllerMethodDiscovered(method));
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -252,7 +230,7 @@ public class ParameterLoaderInterceptorTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        interceptor.intercept(stack,method,instance);
+        parameterLoader.load(new ControllerMethodDiscovered(method));
     }
 
 

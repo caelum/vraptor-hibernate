@@ -24,37 +24,34 @@ import static java.util.Arrays.asList;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.Session;
 import org.hibernate.type.Type;
 
-import br.com.caelum.vraptor.InterceptionException;
-import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.controller.ControllerMethod;
 import br.com.caelum.vraptor.converter.Converter;
 import br.com.caelum.vraptor.core.Converters;
-import br.com.caelum.vraptor.core.InterceptorStack;
+import br.com.caelum.vraptor.events.ControllerMethodDiscovered;
 import br.com.caelum.vraptor.http.Parameter;
 import br.com.caelum.vraptor.http.ParameterNameProvider;
-import br.com.caelum.vraptor.interceptor.Interceptor;
 import br.com.caelum.vraptor.view.FlashScope;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 /**
- * Interceptor that loads given entity from the database.
+ * Observer that loads given entity from the database.
  *
  * @author Lucas Cavalcanti
  * @author Cecilia Fernandes
  * @author Otávio Scherer Garcia
  * @since vraptor 3.4.0
  */
-@Intercepts
-public class ParameterLoaderInterceptor implements Interceptor{
+public class ParameterLoader {
 
     private Session session;
     private HttpServletRequest request;
@@ -64,11 +61,11 @@ public class ParameterLoaderInterceptor implements Interceptor{
     private FlashScope flash;
 
     @Deprecated //CDI eyes only
-	public ParameterLoaderInterceptor() {
+	public ParameterLoader() {
 	}
     
     @Inject
-    public ParameterLoaderInterceptor(Session session, HttpServletRequest request, ParameterNameProvider provider,
+    public ParameterLoader(Session session, HttpServletRequest request, ParameterNameProvider provider,
             Result result, Converters converters, FlashScope flash) {
         this.session = session;
         this.request = request;
@@ -78,12 +75,14 @@ public class ParameterLoaderInterceptor implements Interceptor{
         this.flash = flash;
     }
     
-    public boolean accepts(ControllerMethod method) {
+    public boolean containsLoadAnnotation(ControllerMethod method) {
         return any(asList(method.getMethod().getParameterAnnotations()), hasAnnotation(Load.class));
     }
 
-	public void intercept(InterceptorStack stack, ControllerMethod method,
-			Object controllerInstance) throws InterceptionException{
+	public void load(@Observes ControllerMethodDiscovered event) {
+		
+		ControllerMethod method = event.getControllerMethod();
+		if (!containsLoadAnnotation(method)) return;
     	
         Annotation[][] annotations = method.getMethod().getParameterAnnotations();
 
@@ -111,7 +110,6 @@ public class ParameterLoaderInterceptor implements Interceptor{
         }
 
         flash.includeParameters(method, args);
-        stack.next(method, controllerInstance);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
