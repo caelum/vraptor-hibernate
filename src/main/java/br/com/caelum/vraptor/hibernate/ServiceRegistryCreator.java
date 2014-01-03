@@ -21,9 +21,9 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 
 /**
  * Create a Hibernate {@link ServiceRegistry}, once when application starts.
@@ -46,13 +46,12 @@ public class ServiceRegistryCreator {
 	}
 
 	public void destroy(@Disposes ServiceRegistry serviceRegistry) {
-		ServiceRegistryBuilder.destroy(serviceRegistry);
+		StandardServiceRegistryBuilder.destroy(serviceRegistry);
 	}
 
 	@Produces
 	@ApplicationScoped
 	public ServiceRegistry getInstance() {
-		ServiceRegistryBuilder builder = new ServiceRegistryBuilder();
-		return builder.applySettings(cfg.getProperties()).buildServiceRegistry();
+		return new StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build();
 	}
 }
