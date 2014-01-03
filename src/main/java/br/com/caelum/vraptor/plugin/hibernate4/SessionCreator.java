@@ -16,9 +16,8 @@
  */
 package br.com.caelum.vraptor.plugin.hibernate4;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
@@ -30,11 +29,9 @@ import org.hibernate.SessionFactory;
  * 
  * @author Otávio Scherer Garcia
  */
-@RequestScoped
 public class SessionCreator {
 
 	private SessionFactory factory;
-	private Session session;
 
 	@Deprecated
 	// CDI eyes only
@@ -46,27 +43,13 @@ public class SessionCreator {
 		this.factory = factory;
 	}
 
-	/**
-	 * Open a {@link Session}.
-	 */
-	@PostConstruct
-	public void create() {
-		session = factory.openSession();
-	}
-
-	/**
-	 * Close a {@link Session} if it's open.
-	 */
-	@PreDestroy
-	public void destroy() {
-		if (session.isOpen()) {
-			session.close();
-		}
+	public void destroy(@Disposes Session session) {
+		session.close();
 	}
 
 	@Produces
+	@RequestScoped
 	public Session getInstance() {
-		return session;
+		return factory.openSession();
 	}
-
 }

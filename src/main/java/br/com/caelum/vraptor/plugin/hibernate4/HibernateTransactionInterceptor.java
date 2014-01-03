@@ -28,7 +28,7 @@ import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 import br.com.caelum.vraptor.validator.Validator;
 
 /**
- * An example of Hibernate Transaction management on VRaptor
+ * Intercepts all requests starting a transaction. If any error occurs, the interceptor rollback transaction.
  * 
  * @author Lucas Cavalcanti
  */
@@ -53,7 +53,6 @@ public class HibernateTransactionInterceptor {
 
 	@AroundCall
 	public void intercept(SimpleInterceptorStack stack) {
-
 		addRedirectListener();
 
 		Transaction transaction = null;

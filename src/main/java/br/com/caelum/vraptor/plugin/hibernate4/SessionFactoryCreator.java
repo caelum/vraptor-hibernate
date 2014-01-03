@@ -16,9 +16,8 @@
  */
 package br.com.caelum.vraptor.plugin.hibernate4;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
@@ -36,7 +35,6 @@ public class SessionFactoryCreator {
 
 	private Configuration cfg;
 	private ServiceRegistry serviceRegistry;
-	private SessionFactory sessionFactory;
 
 	@Deprecated
 	// CDI eyes only
@@ -49,26 +47,12 @@ public class SessionFactoryCreator {
 		this.serviceRegistry = serviceRegistry;
 	}
 
-	/**
-	 * Build a {@link SessionFactory}.
-	 */
-	@PostConstruct
-	public void create() {
-		sessionFactory = cfg.buildSessionFactory(serviceRegistry);
-	}
-
-	/**
-	 * Closes {@link SessionFactory} if it's not closed.
-	 */
-	@PreDestroy
-	public void destroy() {
-		if (!sessionFactory.isClosed()) {
-			sessionFactory.close();
-		}
-	}
-
 	@Produces
 	public SessionFactory getInstance() {
-		return sessionFactory;
+		return cfg.buildSessionFactory(serviceRegistry);
+	}
+
+	public void destroy(@Disposes SessionFactory sessionFactory) {
+		sessionFactory.close();
 	}
 }

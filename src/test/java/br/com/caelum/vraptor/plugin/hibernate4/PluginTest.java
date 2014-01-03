@@ -60,31 +60,27 @@ public class PluginTest {
 		configurationCreator = new ConfigurationCreator();
 		configurationCreator = spy(configurationCreator);
 
-		configurationCreator.create();
 		configuration = configurationCreator.getInstance();
 	}
 
 	private void buildServiceRegistry() {
 		serviceRegistryCreator = new ServiceRegistryCreator(configuration);
-		serviceRegistryCreator.create();
 		serviceRegistry = serviceRegistryCreator.getInstance();
 	}
 
 	private void buildSessionFactory() {
 		sessionFactoryCreator = new SessionFactoryCreator(configuration, serviceRegistry);
-		sessionFactoryCreator.create();
 		sessionFactory = sessionFactoryCreator.getInstance();
 	}
 
 	private void buildSession() {
 		sessionCreator = new SessionCreator(sessionFactory);
-		sessionCreator.create();
 		session = sessionCreator.getInstance();
 	}
 
 	private void destroyObjects() {
-		sessionCreator.destroy();
-		sessionFactoryCreator.destroy();
-		serviceRegistryCreator.destroy();
+		sessionCreator.destroy(session);
+		sessionFactoryCreator.destroy(sessionFactory);
+		serviceRegistryCreator.destroy(serviceRegistry);
 	}
 }
