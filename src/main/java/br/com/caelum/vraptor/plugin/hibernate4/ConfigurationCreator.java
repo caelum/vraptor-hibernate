@@ -21,12 +21,8 @@ import java.net.URL;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 
 import org.hibernate.cfg.Configuration;
-
-import br.com.caelum.vraptor.environment.Environment;
-import br.com.caelum.vraptor.ioc.Container;
 
 /**
  * Creates a Hibernate {@link Configuration}, once when application starts.
@@ -37,15 +33,6 @@ import br.com.caelum.vraptor.ioc.Container;
 public class ConfigurationCreator{
 
     private Configuration cfg;
-    private Container container;
-
-    @Deprecated //CDI eyes only
-	public ConfigurationCreator() {}
-    
-    @Inject
-    public ConfigurationCreator(Container container) {
-        this.container = container;
-    }
 
     /**
      * Create a new instance for {@link Configuration}, and after call the
@@ -56,36 +43,10 @@ public class ConfigurationCreator{
     @PostConstruct
     public void create() {
         cfg = new Configuration().configure(getHibernateCfgLocation());
-        configureExtras();
     }
 
     protected URL getHibernateCfgLocation() {
-        if (isEnvironmentAvailable()) {
-            Environment env = container.instanceFor(Environment.class);
-            return env.getResource(getHibernateCfgName());
-        }
-
-        return getClass().getResource(getHibernateCfgName());
-    }
-
-    protected String getHibernateCfgName() {
-        return "/hibernate.cfg.xml";
-    }
-
-    protected boolean isEnvironmentAvailable() {
-        try {
-            Class.forName("br.com.caelum.vraptor.environment.Environment");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
-
-    /**
-     * This method can override if you want to configure more things.
-     */
-    public void configureExtras() {
-
+        return getClass().getResource("/hibernate.cfg.xml");
     }
 
     @Produces
