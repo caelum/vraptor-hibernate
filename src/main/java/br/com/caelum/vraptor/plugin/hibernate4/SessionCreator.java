@@ -33,40 +33,40 @@ import org.hibernate.SessionFactory;
 @RequestScoped
 public class SessionCreator {
 
-    private SessionFactory factory;
-    private Session session;
+	private SessionFactory factory;
+	private Session session;
 
-    @Deprecated
-	//CDI eyes only
+	@Deprecated
+	// CDI eyes only
 	public SessionCreator() {
 	}
-    
-    @Inject
-    public SessionCreator(SessionFactory factory) {
-        this.factory = factory;
-    }
 
-    /**
-     * Open a {@link Session}.
-     */
-    @PostConstruct
-    public void create() {
-        session = factory.openSession();
-    }
+	@Inject
+	public SessionCreator(SessionFactory factory) {
+		this.factory = factory;
+	}
 
-    /**
-     * Close a {@link Session} if it's open.
-     */
-    @PreDestroy
-    public void destroy() {
-        if (session.isOpen()) {
-            session.close();
-        }
-    }
-    
-    @Produces
-    public Session getInstance() {
-        return session;
-    }
+	/**
+	 * Open a {@link Session}.
+	 */
+	@PostConstruct
+	public void create() {
+		session = factory.openSession();
+	}
+
+	/**
+	 * Close a {@link Session} if it's open.
+	 */
+	@PreDestroy
+	public void destroy() {
+		if (session.isOpen()) {
+			session.close();
+		}
+	}
+
+	@Produces
+	public Session getInstance() {
+		return session;
+	}
 
 }

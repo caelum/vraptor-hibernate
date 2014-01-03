@@ -32,43 +32,43 @@ import org.hibernate.service.ServiceRegistry;
  * @author Otávio Scherer Garcia
  */
 @ApplicationScoped
-public class SessionFactoryCreator{
+public class SessionFactoryCreator {
 
-    private Configuration cfg;
-    private ServiceRegistry serviceRegistry;
-    private SessionFactory sessionFactory;
+	private Configuration cfg;
+	private ServiceRegistry serviceRegistry;
+	private SessionFactory sessionFactory;
 
-    @Deprecated
-	//CDI eyes only
+	@Deprecated
+	// CDI eyes only
 	public SessionFactoryCreator() {
 	}
-    
-    @Inject
-    public SessionFactoryCreator(Configuration cfg, ServiceRegistry serviceRegistry) {
-        this.cfg = cfg;
-        this.serviceRegistry = serviceRegistry;
-    }
 
-    /**
-     * Build a {@link SessionFactory}.
-     */
-    @PostConstruct
-    public void create() {
-        sessionFactory = cfg.buildSessionFactory(serviceRegistry);
-    }
+	@Inject
+	public SessionFactoryCreator(Configuration cfg, ServiceRegistry serviceRegistry) {
+		this.cfg = cfg;
+		this.serviceRegistry = serviceRegistry;
+	}
 
-    /**
-     * Closes {@link SessionFactory} if it's not closed.
-     */
-    @PreDestroy
-    public void destroy() {
-        if (!sessionFactory.isClosed()) {
-            sessionFactory.close();
-        }
-    }
+	/**
+	 * Build a {@link SessionFactory}.
+	 */
+	@PostConstruct
+	public void create() {
+		sessionFactory = cfg.buildSessionFactory(serviceRegistry);
+	}
 
-    @Produces
-    public SessionFactory getInstance() {
-        return sessionFactory;
-    }
+	/**
+	 * Closes {@link SessionFactory} if it's not closed.
+	 */
+	@PreDestroy
+	public void destroy() {
+		if (!sessionFactory.isClosed()) {
+			sessionFactory.close();
+		}
+	}
+
+	@Produces
+	public SessionFactory getInstance() {
+		return sessionFactory;
+	}
 }

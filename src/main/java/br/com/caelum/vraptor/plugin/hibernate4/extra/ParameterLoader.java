@@ -45,7 +45,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * Observer that loads given entity from the database.
- *
+ * 
  * @author Lucas Cavalcanti
  * @author Cecilia Fernandes
  * @author Otávio Scherer Garcia
@@ -53,93 +53,93 @@ import com.google.common.collect.Iterables;
  */
 public class ParameterLoader {
 
-    private Session session;
-    private HttpServletRequest request;
-    private ParameterNameProvider provider;
-    private Result result;
-    private Converters converters;
-    private FlashScope flash;
+	private Session session;
+	private HttpServletRequest request;
+	private ParameterNameProvider provider;
+	private Result result;
+	private Converters converters;
+	private FlashScope flash;
 
-    @Deprecated //CDI eyes only
+	@Deprecated
+	// CDI eyes only
 	public ParameterLoader() {
 	}
-    
-    @Inject
-    public ParameterLoader(Session session, HttpServletRequest request, ParameterNameProvider provider,
-            Result result, Converters converters, FlashScope flash) {
-        this.session = session;
-        this.request = request;
-        this.provider = provider;
-        this.result = result;
-        this.converters = converters;
-        this.flash = flash;
-    }
-    
-    public boolean containsLoadAnnotation(ControllerMethod method) {
-        return any(asList(method.getMethod().getParameterAnnotations()), hasAnnotation(Load.class));
-    }
+
+	@Inject
+	public ParameterLoader(Session session, HttpServletRequest request, ParameterNameProvider provider, Result result,
+			Converters converters, FlashScope flash) {
+		this.session = session;
+		this.request = request;
+		this.provider = provider;
+		this.result = result;
+		this.converters = converters;
+		this.flash = flash;
+	}
+
+	public boolean containsLoadAnnotation(ControllerMethod method) {
+		return any(asList(method.getMethod().getParameterAnnotations()), hasAnnotation(Load.class));
+	}
 
 	public void load(@Observes ControllerMethodDiscovered event) {
-		
 		ControllerMethod method = event.getControllerMethod();
-		if (!containsLoadAnnotation(method)) return;
-    	
-        Annotation[][] annotations = method.getMethod().getParameterAnnotations();
 
-        final Parameter[] parameters = provider.parametersFor(method.getMethod());
-        final Class<?>[] types = method.getMethod().getParameterTypes();
-        final Object[] args = flash.consumeParameters(method);
+		if (containsLoadAnnotation(method)) {
+			Annotation[][] annotations = method.getMethod().getParameterAnnotations();
 
-        for (int i = 0; i < parameters.length; i++) {
-            if (hasLoadAnnotation(annotations[i])) {
-                String name = parameters[i].getName();
-				Object loaded = load(name, types[i]);
+			final Parameter[] parameters = provider.parametersFor(method.getMethod());
+			final Class<?>[] types = method.getMethod().getParameterTypes();
+			final Object[] args = flash.consumeParameters(method);
 
-                // TODO extract to method, so users can override behavior
-                if (loaded == null) {
-                    result.notFound();
-                    return;
-                }
+			for (int i = 0; i < parameters.length; i++) {
+				if (hasLoadAnnotation(annotations[i])) {
+					String name = parameters[i].getName();
+					Object loaded = load(name, types[i]);
 
-                if (args != null) {
-                    args[i] = loaded;
-                } else {
-                    request.setAttribute(name, loaded);
-                }
-            }
-        }
+					// TODO extract to method, so users can override behavior
+					if (loaded == null) {
+						result.notFound();
+						return;
+					}
 
-        flash.includeParameters(method, args);
-    }
+					if (args != null) {
+						args[i] = loaded;
+					} else {
+						request.setAttribute(name, loaded);
+					}
+				}
+			}
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private Object load(String name, Class type) {
-        String idProperty = session.getSessionFactory().getClassMetadata(type).getIdentifierPropertyName();
-        checkArgument(idProperty != null, "Entity %s must have an id property for @Load.", type.getSimpleName());
+			flash.includeParameters(method, args);
+		}
+	}
 
-        String parameter = request.getParameter(name + "." + idProperty);
-        if (parameter == null) {
-            return null;
-        }
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private Object load(String name, Class type) {
+		String idProperty = session.getSessionFactory().getClassMetadata(type).getIdentifierPropertyName();
+		checkArgument(idProperty != null, "Entity %s must have an id property for @Load.", type.getSimpleName());
 
-        Type idType = session.getSessionFactory().getClassMetadata(type).getIdentifierType();
-        Converter<?> converter = converters.to(idType.getReturnedClass());
-        checkArgument(converter != null, "Entity %s id type %s must have a converter", 
-                type.getSimpleName(), idType);
+		String parameter = request.getParameter(name + "." + idProperty);
+		if (parameter == null) {
+			return null;
+		}
 
-        Serializable id = (Serializable) converter.convert(parameter, type);
-        return session.get(type, id);
-    }
+		Type idType = session.getSessionFactory().getClassMetadata(type).getIdentifierType();
+		Converter<?> converter = converters.to(idType.getReturnedClass());
+		checkArgument(converter != null, "Entity %s id type %s must have a converter", type.getSimpleName(), idType);
 
-    private boolean hasLoadAnnotation(Annotation[] annotations) {
-        return !isEmpty(Iterables.filter(asList(annotations), Load.class));
-    }
-    
-    private Predicate<? super Annotation[]> hasAnnotation(final Class<?> annotation) {
-    	return new Predicate<Annotation[]>() {
-            public boolean apply(Annotation[] param) {
-                return any(asList(param), instanceOf(annotation));
-            }
-        };
+		Serializable id = (Serializable) converter.convert(parameter, type);
+		return session.get(type, id);
+	}
+
+	private boolean hasLoadAnnotation(Annotation[] annotations) {
+		return !isEmpty(Iterables.filter(asList(annotations), Load.class));
+	}
+
+	private Predicate<? super Annotation[]> hasAnnotation(final Class<?> annotation) {
+		return new Predicate<Annotation[]>() {
+			public boolean apply(Annotation[] param) {
+				return any(asList(param), instanceOf(annotation));
+			}
+		};
 	}
 }

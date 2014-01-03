@@ -35,46 +35,47 @@ import br.com.caelum.vraptor.validator.Validator;
 @Intercepts
 public class HibernateTransactionInterceptor {
 
-    private Session session;
-    private Validator validator;
-    private MutableResponse response;
+	private Session session;
+	private Validator validator;
+	private MutableResponse response;
 
-    @Deprecated	//CDI eyes only
-	public HibernateTransactionInterceptor() {}
-    
-    @Inject
-    public HibernateTransactionInterceptor(Session session, Validator validator, MutableResponse response) {
-        this.session = session;
-        this.validator = validator;
+	@Deprecated
+	// CDI eyes only
+	public HibernateTransactionInterceptor() {
+	}
+
+	@Inject
+	public HibernateTransactionInterceptor(Session session, Validator validator, MutableResponse response) {
+		this.session = session;
+		this.validator = validator;
 		this.response = response;
-    }
+	}
 
-    @AroundCall
-    public void intercept(SimpleInterceptorStack stack) {
-    	
-        addRedirectListener();
-    	
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            stack.next();
-            commit(transaction);
-        } finally {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-        }
-    }
-    
-    private void commit(Transaction transaction) {
+	@AroundCall
+	public void intercept(SimpleInterceptorStack stack) {
+
+		addRedirectListener();
+
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			stack.next();
+			commit(transaction);
+		} finally {
+			if (transaction != null && transaction.isActive()) {
+				transaction.rollback();
+			}
+		}
+	}
+
+	private void commit(Transaction transaction) {
 		if (!validator.hasErrors() && transaction.isActive()) {
 			transaction.commit();
 		}
 	}
 
 	/**
-	 * We force the commit before the redirect, this way we can abort the
-	 * redirect if a database error occurs.
+	 * We force the commit before the redirect, this way we can abort the redirect if a database error occurs.
 	 */
 	private void addRedirectListener() {
 		response.addRedirectListener(new MutableResponse.RedirectListener() {

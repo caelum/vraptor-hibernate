@@ -30,27 +30,27 @@ import org.hibernate.cfg.Configuration;
  * @author Otávio Scherer Garcia
  */
 @ApplicationScoped
-public class ConfigurationCreator{
+public class ConfigurationCreator {
 
-    private Configuration cfg;
+	private Configuration cfg;
 
-    /**
-     * Create a new instance for {@link Configuration}, and after call the
-     * {@link ConfigurationCreator#configureExtras()} method, that you can override to configure extra guys.
-     * If vraptor-environment is available on classpath, this method will use then to locate hibernate cfg
-     * file.
-     */
-    @PostConstruct
-    public void create() {
-        cfg = new Configuration().configure(getHibernateCfgLocation());
-    }
+	/**
+	 * Create a new instance for {@link Configuration}, and after call the
+	 * {@link ConfigurationCreator#configureExtras()} method, that you can override to configure extra guys.
+	 * If vraptor-environment is available on classpath, this method will use then to locate hibernate cfg
+	 * file.
+	 */
+	@PostConstruct
+	public void create() {
+		cfg = new Configuration().configure(getHibernateCfgLocation());
+	}
 
-    protected URL getHibernateCfgLocation() {
-        return getClass().getResource("/hibernate.cfg.xml");
-    }
+	protected URL getHibernateCfgLocation() {
+		return getClass().getResource("/hibernate.cfg.xml");
+	}
 
-    @Produces
-    public Configuration getInstance() {
-        return cfg;
-    }
+	@Produces
+	public Configuration getInstance() {
+		return cfg;
+	}
 }

@@ -28,64 +28,63 @@ import org.junit.Test;
 
 public class PluginTest {
 
-    private ConfigurationCreator configurationCreator;
-    private Configuration configuration;
+	private ConfigurationCreator configurationCreator;
+	private Configuration configuration;
 
-    private ServiceRegistryCreator serviceRegistryCreator;
-    private ServiceRegistry serviceRegistry;
+	private ServiceRegistryCreator serviceRegistryCreator;
+	private ServiceRegistry serviceRegistry;
 
-    private SessionFactoryCreator sessionFactoryCreator;
-    private SessionFactory sessionFactory;
+	private SessionFactoryCreator sessionFactoryCreator;
+	private SessionFactory sessionFactory;
 
-    private SessionCreator sessionCreator;
-    private Session session;
+	private SessionCreator sessionCreator;
+	private Session session;
 
-    @Test
-    public void testWithoutEnvironment() {
-        buildConfigurationWithoutEnvironment();
-        buildServiceRegistry();
-        buildSessionFactory();
-        buildSession();
+	@Test
+	public void testWithoutEnvironment() {
+		buildConfigurationWithoutEnvironment();
+		buildServiceRegistry();
+		buildSessionFactory();
+		buildSession();
 
-        assertFalse(sessionFactory.isClosed());
-        assertTrue(session.isOpen());
+		assertFalse(sessionFactory.isClosed());
+		assertTrue(session.isOpen());
 
-        destroyObjects();
+		destroyObjects();
 
-        assertFalse(session.isOpen());
-        assertTrue(sessionFactory.isClosed());
-    }
+		assertFalse(session.isOpen());
+		assertTrue(sessionFactory.isClosed());
+	}
 
-    private void buildConfigurationWithoutEnvironment() {
-        configurationCreator = new ConfigurationCreator();
-        configurationCreator = spy(configurationCreator);
-        
-        configurationCreator.create();
-        configuration = configurationCreator.getInstance();
-    }
+	private void buildConfigurationWithoutEnvironment() {
+		configurationCreator = new ConfigurationCreator();
+		configurationCreator = spy(configurationCreator);
 
-    private void buildServiceRegistry() {
-        serviceRegistryCreator = new ServiceRegistryCreator(configuration);
-        serviceRegistryCreator.create();
-        serviceRegistry = serviceRegistryCreator.getInstance();
-    }
+		configurationCreator.create();
+		configuration = configurationCreator.getInstance();
+	}
 
-    private void buildSessionFactory() {
-        sessionFactoryCreator = new SessionFactoryCreator(configuration, serviceRegistry);
-        sessionFactoryCreator.create();
-        sessionFactory = sessionFactoryCreator.getInstance();
-    }
+	private void buildServiceRegistry() {
+		serviceRegistryCreator = new ServiceRegistryCreator(configuration);
+		serviceRegistryCreator.create();
+		serviceRegistry = serviceRegistryCreator.getInstance();
+	}
 
-    private void buildSession() {
-        sessionCreator = new SessionCreator(sessionFactory);
-        sessionCreator.create();
-        session = sessionCreator.getInstance();
-    }
+	private void buildSessionFactory() {
+		sessionFactoryCreator = new SessionFactoryCreator(configuration, serviceRegistry);
+		sessionFactoryCreator.create();
+		sessionFactory = sessionFactoryCreator.getInstance();
+	}
 
-    private void destroyObjects() {
-        sessionCreator.destroy();
-        sessionFactoryCreator.destroy();
-        serviceRegistryCreator.destroy();
-    }
+	private void buildSession() {
+		sessionCreator = new SessionCreator(sessionFactory);
+		sessionCreator.create();
+		session = sessionCreator.getInstance();
+	}
 
+	private void destroyObjects() {
+		sessionCreator.destroy();
+		sessionFactoryCreator.destroy();
+		serviceRegistryCreator.destroy();
+	}
 }

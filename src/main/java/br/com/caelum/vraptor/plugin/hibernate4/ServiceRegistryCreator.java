@@ -32,38 +32,40 @@ import org.hibernate.service.ServiceRegistryBuilder;
  * @author Otávio Scherer Garcia
  */
 @ApplicationScoped
-public class ServiceRegistryCreator{
+public class ServiceRegistryCreator {
 
-    private Configuration cfg;
-    private ServiceRegistry serviceRegistry;
+	private Configuration cfg;
+	private ServiceRegistry serviceRegistry;
 
-    @Deprecated //CDI eyes only
-	public ServiceRegistryCreator() {}
-    
-    @Inject
-    public ServiceRegistryCreator(Configuration cfg) {
-        this.cfg = cfg;
-    }
+	@Deprecated
+	// CDI eyes only
+	public ServiceRegistryCreator() {
+	}
 
-    /**
-     * Builds a {@link ServiceRegistry}.
-     */
-    @PostConstruct
-    public void create() {
-        ServiceRegistryBuilder builder = new ServiceRegistryBuilder();
-        serviceRegistry = builder.applySettings(cfg.getProperties()).buildServiceRegistry();
-    }
+	@Inject
+	public ServiceRegistryCreator(Configuration cfg) {
+		this.cfg = cfg;
+	}
 
-    /**
-     * Destroy the {@link ServiceRegistry} when application is shutting down.
-     */
-    @PreDestroy
-    public void destroy() {
-        ServiceRegistryBuilder.destroy(serviceRegistry);
-    }
+	/**
+	 * Builds a {@link ServiceRegistry}.
+	 */
+	@PostConstruct
+	public void create() {
+		ServiceRegistryBuilder builder = new ServiceRegistryBuilder();
+		serviceRegistry = builder.applySettings(cfg.getProperties()).buildServiceRegistry();
+	}
 
-    @Produces
-    public ServiceRegistry getInstance() {
-        return serviceRegistry;
-    }
+	/**
+	 * Destroy the {@link ServiceRegistry} when application is shutting down.
+	 */
+	@PreDestroy
+	public void destroy() {
+		ServiceRegistryBuilder.destroy(serviceRegistry);
+	}
+
+	@Produces
+	public ServiceRegistry getInstance() {
+		return serviceRegistry;
+	}
 }
