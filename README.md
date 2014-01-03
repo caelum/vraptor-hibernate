@@ -1,5 +1,7 @@
 # VRaptor Hibernate Plugin
 
+![Build status](https://secure.travis-ci.org/caelum/vraptor-hibernate.png)
+
 VRaptor Hibernate Plugin provides support to use with Hibernate 4.
 
 # How to install?
