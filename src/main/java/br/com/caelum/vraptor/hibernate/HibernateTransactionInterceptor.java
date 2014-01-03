@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package br.com.caelum.vraptor.plugin.hibernate4;
+package br.com.caelum.vraptor.hibernate;
 
 import javax.inject.Inject;
 

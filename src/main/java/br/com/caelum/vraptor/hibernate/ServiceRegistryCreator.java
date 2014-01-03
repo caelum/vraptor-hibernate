@@ -14,29 +14,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package br.com.caelum.vraptor.plugin.hibernate4;
-
-import java.net.URL;
+package br.com.caelum.vraptor.hibernate;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
 
 /**
- * Creates a Hibernate {@link Configuration}, once when application starts.
+ * Create a Hibernate {@link ServiceRegistry}, once when application starts.
  * 
  * @author Otávio Scherer Garcia
  */
 @ApplicationScoped
-public class ConfigurationCreator {
+public class ServiceRegistryCreator {
 
-	protected URL getHibernateCfgLocation() {
-		return getClass().getResource("/hibernate.cfg.xml");
+	private Configuration cfg;
+
+	/**
+	 * @deprecated CDI eyes only
+	 */
+	public ServiceRegistryCreator() {
+	}
+
+	@Inject
+	public ServiceRegistryCreator(Configuration cfg) {
+		this.cfg = cfg;
+	}
+
+	public void destroy(@Disposes ServiceRegistry serviceRegistry) {
+		ServiceRegistryBuilder.destroy(serviceRegistry);
 	}
 
 	@Produces
-	public Configuration getInstance() {
-		return new Configuration().configure(getHibernateCfgLocation());
+	public ServiceRegistry getInstance() {
+		ServiceRegistryBuilder builder = new ServiceRegistryBuilder();
+		return builder.applySettings(cfg.getProperties()).buildServiceRegistry();
 	}
 }

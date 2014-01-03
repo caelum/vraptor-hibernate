@@ -14,7 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package br.com.caelum.vraptor.hibernate;
+
+import java.net.URL;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+
+import org.hibernate.cfg.Configuration;
+
 /**
- * A simple plugin to provides Hibernate support to VRaptor.
+ * Creates a Hibernate {@link Configuration}, once when application starts.
+ * 
+ * @author Otávio Scherer Garcia
  */
-package br.com.caelum.vraptor.plugin.hibernate4;
+@ApplicationScoped
+public class ConfigurationCreator {
+
+	protected URL getHibernateCfgLocation() {
+		return getClass().getResource("/hibernate.cfg.xml");
+	}
+
+	@Produces
+	public Configuration getInstance() {
+		return new Configuration().configure(getHibernateCfgLocation());
+	}
+}

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package br.com.caelum.vraptor.plugin.hibernate4;
+package br.com.caelum.vraptor.hibernate;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -25,6 +25,11 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.junit.Test;
+
+import br.com.caelum.vraptor.hibernate.ConfigurationCreator;
+import br.com.caelum.vraptor.hibernate.ServiceRegistryCreator;
+import br.com.caelum.vraptor.hibernate.SessionCreator;
+import br.com.caelum.vraptor.hibernate.SessionFactoryCreator;
 
 public class PluginTest {
 

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package br.com.caelum.vraptor.plugin.hibernate4;
+package br.com.caelum.vraptor.hibernate;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -32,6 +32,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import br.com.caelum.vraptor.controller.ControllerMethod;
+import br.com.caelum.vraptor.hibernate.HibernateTransactionInterceptor;
 import br.com.caelum.vraptor.http.MutableResponse;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 import br.com.caelum.vraptor.validator.Validator;

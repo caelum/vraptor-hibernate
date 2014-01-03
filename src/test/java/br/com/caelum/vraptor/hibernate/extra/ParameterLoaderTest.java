@@ -1,4 +1,4 @@
-package br.com.caelum.vraptor.plugin.hibernate4.extra;
+package br.com.caelum.vraptor.hibernate.extra;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -35,6 +35,8 @@ import br.com.caelum.vraptor.converter.StringConverter;
 import br.com.caelum.vraptor.core.Converters;
 import br.com.caelum.vraptor.core.InterceptorStack;
 import br.com.caelum.vraptor.events.ControllerMethodDiscovered;
+import br.com.caelum.vraptor.hibernate.extra.Load;
+import br.com.caelum.vraptor.hibernate.extra.ParameterLoader;
 import br.com.caelum.vraptor.http.Parameter;
 import br.com.caelum.vraptor.http.ParameterNameProvider;
 import br.com.caelum.vraptor.view.FlashScope;

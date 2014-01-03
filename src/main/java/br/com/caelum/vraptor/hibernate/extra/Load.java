@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.caelum.vraptor.plugin.hibernate4.extra;
+package br.com.caelum.vraptor.hibernate.extra;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

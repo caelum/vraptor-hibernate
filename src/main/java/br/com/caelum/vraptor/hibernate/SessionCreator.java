@@ -14,46 +14,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package br.com.caelum.vraptor.plugin.hibernate4;
+package br.com.caelum.vraptor.hibernate;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
 
 /**
- * Creates a {@link SessionFactory} object, once when application starts.
+ * Creates a Hibernate {@link Session}, once per request.
  * 
  * @author Otávio Scherer Garcia
  */
-@ApplicationScoped
-public class SessionFactoryCreator {
+public class SessionCreator {
 
-	private Configuration cfg;
-	private ServiceRegistry serviceRegistry;
+	private SessionFactory factory;
 
 	/**
 	 * @deprecated CDI eyes only
 	 */
-	public SessionFactoryCreator() {
+	public SessionCreator() {
 	}
 
 	@Inject
-	public SessionFactoryCreator(Configuration cfg, ServiceRegistry serviceRegistry) {
-		this.cfg = cfg;
-		this.serviceRegistry = serviceRegistry;
+	public SessionCreator(SessionFactory factory) {
+		this.factory = factory;
+	}
+
+	public void destroy(@Disposes Session session) {
+		session.close();
 	}
 
 	@Produces
-	public SessionFactory getInstance() {
-		return cfg.buildSessionFactory(serviceRegistry);
-	}
-
-	public void destroy(@Disposes SessionFactory sessionFactory) {
-		sessionFactory.close();
+	@RequestScoped
+	public Session getInstance() {
+		return factory.openSession();
 	}
 }
