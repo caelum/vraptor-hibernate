@@ -22,6 +22,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
 import org.hibernate.cfg.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates a Hibernate {@link Configuration}, once when application starts.
@@ -30,6 +32,8 @@ import org.hibernate.cfg.Configuration;
  */
 public class ConfigurationCreator {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationCreator.class);
+
 	protected URL getHibernateCfgLocation() {
 		return getClass().getResource("/hibernate.cfg.xml");
 	}
@@ -37,6 +41,9 @@ public class ConfigurationCreator {
 	@Produces
 	@ApplicationScoped
 	public Configuration getInstance() {
-		return new Configuration().configure(getHibernateCfgLocation());
+		URL location = getHibernateCfgLocation();
+		LOGGER.debug("building configuration using {} file", location);
+
+		return new Configuration().configure(location);
 	}
 }
