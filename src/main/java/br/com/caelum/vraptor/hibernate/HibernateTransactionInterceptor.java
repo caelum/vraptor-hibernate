@@ -20,6 +20,8 @@ import javax.inject.Inject;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import br.com.caelum.vraptor.AroundCall;
 import br.com.caelum.vraptor.Intercepts;
@@ -35,6 +37,7 @@ import br.com.caelum.vraptor.validator.Validator;
 @Intercepts
 public class HibernateTransactionInterceptor {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(HibernateTransactionInterceptor.class);
 	private Session session;
 	private Validator validator;
 	private MutableResponse response;
@@ -56,14 +59,18 @@ public class HibernateTransactionInterceptor {
 	public void intercept(SimpleInterceptorStack stack) {
 		addRedirectListener();
 
-		Transaction transaction = null;
+		Transaction transaction = session.beginTransaction();
+		LOGGER.debug("tx was started");
+		
 		try {
-			transaction = session.beginTransaction();
 			stack.next();
 			commit(transaction);
 		} finally {
-			if (transaction != null && transaction.isActive()) {
+			if (transaction.isActive()) {
 				transaction.rollback();
+				LOGGER.debug("tx was rolled back");
+			} else {
+				LOGGER.debug("tx isn't active");
 			}
 		}
 	}
@@ -71,6 +78,9 @@ public class HibernateTransactionInterceptor {
 	private void commit(Transaction transaction) {
 		if (!validator.hasErrors() && transaction.isActive()) {
 			transaction.commit();
+			LOGGER.debug("tx was commited");
+		} else {
+			LOGGER.debug("tx wasn't commited, hasError {}, isActive {}", validator.hasErrors(), transaction.isActive());
 		}
 	}
 

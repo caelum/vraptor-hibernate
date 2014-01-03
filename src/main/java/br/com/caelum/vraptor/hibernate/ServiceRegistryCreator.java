@@ -24,6 +24,8 @@ import javax.inject.Inject;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Create a Hibernate {@link ServiceRegistry}, once when application starts.
@@ -32,6 +34,7 @@ import org.hibernate.service.ServiceRegistry;
  */
 public class ServiceRegistryCreator {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceRegistryCreator.class);
 	private Configuration cfg;
 
 	/**
@@ -45,13 +48,15 @@ public class ServiceRegistryCreator {
 		this.cfg = cfg;
 	}
 
-	public void destroy(@Disposes ServiceRegistry serviceRegistry) {
-		StandardServiceRegistryBuilder.destroy(serviceRegistry);
-	}
-
 	@Produces
 	@ApplicationScoped
 	public ServiceRegistry getInstance() {
+		LOGGER.debug("creating a service registry");
 		return new StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build();
+	}
+
+	public void destroy(@Disposes ServiceRegistry serviceRegistry) {
+		LOGGER.debug("destroying service registry");
+		StandardServiceRegistryBuilder.destroy(serviceRegistry);
 	}
 }

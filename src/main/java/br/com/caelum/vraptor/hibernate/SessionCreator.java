@@ -23,6 +23,8 @@ import javax.inject.Inject;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates a Hibernate {@link Session}, once per request.
@@ -31,6 +33,7 @@ import org.hibernate.SessionFactory;
  */
 public class SessionCreator {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(SessionCreator.class);
 	private SessionFactory factory;
 
 	/**
@@ -44,13 +47,16 @@ public class SessionCreator {
 		this.factory = factory;
 	}
 
-	public void destroy(@Disposes Session session) {
-		session.close();
-	}
-
 	@Produces
 	@RequestScoped
 	public Session getInstance() {
-		return factory.openSession();
+		Session session = factory.openSession();
+		LOGGER.debug("opening a session {}", session);
+		return session;
+	}
+
+	public void destroy(@Disposes Session session) {
+		LOGGER.debug("closing session {}", session);
+		session.close();
 	}
 }

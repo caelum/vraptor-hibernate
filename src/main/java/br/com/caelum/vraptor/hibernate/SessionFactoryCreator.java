@@ -24,6 +24,8 @@ import javax.inject.Inject;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates a {@link SessionFactory} object, once when application starts.
@@ -32,6 +34,7 @@ import org.hibernate.service.ServiceRegistry;
  */
 public class SessionFactoryCreator {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(SessionFactoryCreator.class);
 	private Configuration cfg;
 	private ServiceRegistry serviceRegistry;
 
@@ -50,10 +53,12 @@ public class SessionFactoryCreator {
 	@Produces
 	@ApplicationScoped
 	public SessionFactory getInstance() {
+		LOGGER.debug("creating a session factory");
 		return cfg.buildSessionFactory(serviceRegistry);
 	}
 
 	public void destroy(@Disposes SessionFactory sessionFactory) {
+		LOGGER.debug("destroying session factory");
 		sessionFactory.close();
 	}
 }
