@@ -60,8 +60,9 @@ public class ParameterLoader {
 	private Converters converters;
 	private FlashScope flash;
 
-	@Deprecated
-	// CDI eyes only
+	/**
+	 * @deprecated CDI eyes only
+	 */
 	public ParameterLoader() {
 	}
 

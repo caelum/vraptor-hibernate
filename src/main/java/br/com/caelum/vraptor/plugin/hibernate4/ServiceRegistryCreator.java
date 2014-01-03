@@ -35,8 +35,9 @@ public class ServiceRegistryCreator {
 
 	private Configuration cfg;
 
-	@Deprecated
-	// CDI eyes only
+	/**
+	 * @deprecated CDI eyes only
+	 */
 	public ServiceRegistryCreator() {
 	}
 

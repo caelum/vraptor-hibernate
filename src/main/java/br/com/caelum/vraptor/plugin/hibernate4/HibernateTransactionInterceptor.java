@@ -39,8 +39,9 @@ public class HibernateTransactionInterceptor {
 	private Validator validator;
 	private MutableResponse response;
 
-	@Deprecated
-	// CDI eyes only
+	/**
+	 * @deprecated CDI eyes only
+	 */
 	public HibernateTransactionInterceptor() {
 	}
 

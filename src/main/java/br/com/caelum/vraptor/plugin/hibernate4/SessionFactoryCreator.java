@@ -36,8 +36,9 @@ public class SessionFactoryCreator {
 	private Configuration cfg;
 	private ServiceRegistry serviceRegistry;
 
-	@Deprecated
-	// CDI eyes only
+	/**
+	 * @deprecated CDI eyes only
+	 */
 	public SessionFactoryCreator() {
 	}
 

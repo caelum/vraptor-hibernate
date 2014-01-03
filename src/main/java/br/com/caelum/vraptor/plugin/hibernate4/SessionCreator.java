@@ -33,8 +33,9 @@ public class SessionCreator {
 
 	private SessionFactory factory;
 
-	@Deprecated
-	// CDI eyes only
+	/**
+	 * @deprecated CDI eyes only
+	 */
 	public SessionCreator() {
 	}
 
