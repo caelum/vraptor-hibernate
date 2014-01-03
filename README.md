@@ -1,11 +1,6 @@
-# VRaptor Hibernate 4 Plugin
+# VRaptor Hibernate Plugin
 
-VRaptor Hibernate 4 Plugin provides support to use with Hibernate 4. 
-
-# Why other plugin?
-
-The current plugin embedded into VRaptor doesn't work with Hibernate 4 because 
-SessionFactory creation are diferent in this version. 
+VRaptor Hibernate Plugin provides support to use with Hibernate 4.
 
 # How to install?
 
@@ -15,10 +10,7 @@ downloads area or in Maven Repository:
 
 	<dependency>
 	  <groupId>br.com.caelum.vraptor</groupId>
-	  <artifactId>vraptor-plugin-hibernate4</artifactId>
-	  <version>1.0.0</version>
+	  <artifactId>vraptor-hibernate</artifactId>
+	  <version>4.0.0</version>
 	</dependency>
 
-# Environment support
-
-This plugin supports VRaptor Environment. See instructions here: https://github.com/caelum/vraptor-environment
