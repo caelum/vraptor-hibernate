@@ -28,7 +28,6 @@ import org.hibernate.cfg.Configuration;
  * 
  * @author Otávio Scherer Garcia
  */
-@ApplicationScoped
 public class ConfigurationCreator {
 
 	protected URL getHibernateCfgLocation() {
@@ -36,6 +35,7 @@ public class ConfigurationCreator {
 	}
 
 	@Produces
+	@ApplicationScoped
 	public Configuration getInstance() {
 		return new Configuration().configure(getHibernateCfgLocation());
 	}

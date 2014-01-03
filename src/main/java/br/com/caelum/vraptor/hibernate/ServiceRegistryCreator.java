@@ -30,7 +30,6 @@ import org.hibernate.service.ServiceRegistryBuilder;
  * 
  * @author Otávio Scherer Garcia
  */
-@ApplicationScoped
 public class ServiceRegistryCreator {
 
 	private Configuration cfg;
@@ -51,6 +50,7 @@ public class ServiceRegistryCreator {
 	}
 
 	@Produces
+	@ApplicationScoped
 	public ServiceRegistry getInstance() {
 		ServiceRegistryBuilder builder = new ServiceRegistryBuilder();
 		return builder.applySettings(cfg.getProperties()).buildServiceRegistry();

@@ -30,7 +30,6 @@ import org.hibernate.service.ServiceRegistry;
  * 
  * @author Otávio Scherer Garcia
  */
-@ApplicationScoped
 public class SessionFactoryCreator {
 
 	private Configuration cfg;
@@ -49,6 +48,7 @@ public class SessionFactoryCreator {
 	}
 
 	@Produces
+	@ApplicationScoped
 	public SessionFactory getInstance() {
 		return cfg.buildSessionFactory(serviceRegistry);
 	}
