@@ -35,7 +35,7 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.controller.ControllerMethod;
 import br.com.caelum.vraptor.converter.Converter;
 import br.com.caelum.vraptor.core.Converters;
-import br.com.caelum.vraptor.events.ControllerMethodDiscovered;
+import br.com.caelum.vraptor.events.ControllerFound;
 import br.com.caelum.vraptor.http.Parameter;
 import br.com.caelum.vraptor.http.ParameterNameProvider;
 import br.com.caelum.vraptor.view.FlashScope;
@@ -81,8 +81,8 @@ public class ParameterLoader {
 		return any(asList(method.getMethod().getParameterAnnotations()), hasAnnotation(Load.class));
 	}
 
-	public void load(@Observes ControllerMethodDiscovered event) {
-		ControllerMethod method = event.getControllerMethod();
+	public void load(@Observes ControllerFound event) {
+		ControllerMethod method = event.getMethod();
 
 		if (containsLoadAnnotation(method)) {
 			Annotation[][] annotations = method.getMethod().getParameterAnnotations();

@@ -34,9 +34,7 @@ import br.com.caelum.vraptor.converter.LongConverter;
 import br.com.caelum.vraptor.converter.StringConverter;
 import br.com.caelum.vraptor.core.Converters;
 import br.com.caelum.vraptor.core.InterceptorStack;
-import br.com.caelum.vraptor.events.ControllerMethodDiscovered;
-import br.com.caelum.vraptor.hibernate.extra.Load;
-import br.com.caelum.vraptor.hibernate.extra.ParameterLoader;
+import br.com.caelum.vraptor.events.ControllerFound;
 import br.com.caelum.vraptor.http.Parameter;
 import br.com.caelum.vraptor.http.ParameterNameProvider;
 import br.com.caelum.vraptor.view.FlashScope;
@@ -83,7 +81,7 @@ public class ParameterLoaderTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        parameterLoader.load(new ControllerMethodDiscovered(method));
+        parameterLoader.load(new ControllerFound(method));
 
         verify(request).setAttribute("entity", expectedEntity);
     }
@@ -104,7 +102,7 @@ public class ParameterLoaderTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        parameterLoader.load(new ControllerMethodDiscovered(method));
+        parameterLoader.load(new ControllerFound(method));
         verify(request).setAttribute("entity", expectedEntity);
     }
 
@@ -136,7 +134,7 @@ public class ParameterLoaderTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(String.class);
 
-        parameterLoader.load(new ControllerMethodDiscovered(method));
+        parameterLoader.load(new ControllerFound(method));
         verify(request).setAttribute("entity", expectedEntity);
     }
 
@@ -158,7 +156,7 @@ public class ParameterLoaderTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
         
-        parameterLoader.load(new ControllerMethodDiscovered(method));
+        parameterLoader.load(new ControllerFound(method));
         assertThat(args[0], is((Object) expectedEntity));
 
         verify(flash).includeParameters(method, args);
@@ -176,7 +174,7 @@ public class ParameterLoaderTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        parameterLoader.load(new ControllerMethodDiscovered(method));
+        parameterLoader.load(new ControllerFound(method));
         verify(request, never()).setAttribute(eq("entity"), any());
         verify(result).notFound();
     }
@@ -194,7 +192,7 @@ public class ParameterLoaderTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        parameterLoader.load(new ControllerMethodDiscovered(method));
+        parameterLoader.load(new ControllerFound(method));
         verify(request, never()).setAttribute(eq("entity"), any());
         verify(result).notFound();
     }
@@ -213,7 +211,7 @@ public class ParameterLoaderTest {
         fail().when(request).setAttribute(eq("entity"), any());
         fail().when(result).notFound();
 
-        parameterLoader.load(new ControllerMethodDiscovered(method));
+        parameterLoader.load(new ControllerFound(method));
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -232,7 +230,7 @@ public class ParameterLoaderTest {
         when(classMetadata.getIdentifierType()).thenReturn(type);
         when(type.getReturnedClass()).thenReturn(Long.class);
 
-        parameterLoader.load(new ControllerMethodDiscovered(method));
+        parameterLoader.load(new ControllerFound(method));
     }
 
 
