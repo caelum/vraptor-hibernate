@@ -45,7 +45,7 @@ public class HibernateTransactionInterceptorTest {
 	@Mock private Transaction transaction;
 	@Mock private Validator validator;
 	@Mock private MutableResponse response;
-	private HibernateTransactionInterceptor interceptor;
+	private HibernateInterceptor interceptor;
 
 	@Before
 	public void setUp() {
