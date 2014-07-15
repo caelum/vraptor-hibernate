@@ -35,7 +35,7 @@ import br.com.caelum.vraptor.validator.Validator;
  * @author Lucas Cavalcanti
  */
 @Intercepts
-public class HibernateTransactionInterceptor {
+public class HibernateTransactionInterceptor implements HibernateInterceptor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HibernateTransactionInterceptor.class);
 	private Session session;
@@ -56,6 +56,7 @@ public class HibernateTransactionInterceptor {
 	}
 
 	@AroundCall
+	@Override
 	public void intercept(SimpleInterceptorStack stack) {
 		addRedirectListener();
 
