@@ -13,7 +13,7 @@ downloads area or in Maven Repository:
 	<dependency>
 	  <groupId>br.com.caelum.vraptor</groupId>
 	  <artifactId>vraptor-hibernate</artifactId>
-	  <version>4.0.0</version>
+	  <version>4.0.0.Final</version> <!-- or the latest version -->
 	</dependency>
 
 # Transactional Control
