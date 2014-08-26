@@ -39,8 +39,10 @@ public class ConfigurationCreator {
 
 	private final Environment environment;
 	
-	
-	public ConfigurationCreator() {
+	/**
+	 * @deprecated cdi eyes only
+	 */	
+	protected ConfigurationCreator() {
 		this(null);	
 	}
 
