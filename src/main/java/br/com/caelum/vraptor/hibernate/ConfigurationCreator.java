@@ -20,11 +20,13 @@ import java.net.URL;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import br.com.caelum.vraptor.environment.Environment
+import javax.inject.Inject;
 
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import br.com.caelum.vraptor.environment.Environment
+
 
 /**
  * Creates a Hibernate {@link Configuration}, once when application starts.
