@@ -20,6 +20,7 @@ import java.net.URL;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import br.com.caelum.vraptor.environment.Environment
 
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
@@ -34,8 +35,20 @@ public class ConfigurationCreator {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationCreator.class);
 
+	private final Environment environment;
+	
+	
+	public ConfigurationCreator() {
+		this(null);	
+	}
+
+	@Inject
+	public ConfigurationCreator(Environment environment) {
+		this.environment = environment;	
+	}
+
 	protected URL getHibernateCfgLocation() {
-		return getClass().getResource("/hibernate.cfg.xml");
+		return environment.getResource("/hibernate.cfg.xml");
 	}
 
 	@Produces
@@ -43,7 +56,6 @@ public class ConfigurationCreator {
 	public Configuration getInstance() {
 		URL location = getHibernateCfgLocation();
 		LOGGER.debug("building configuration using {} file", location);
-
 		return new Configuration().configure(location);
 	}
 }
