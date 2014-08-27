@@ -26,11 +26,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.junit.Test;
 
-import br.com.caelum.vraptor.hibernate.ConfigurationCreator;
-import br.com.caelum.vraptor.hibernate.ServiceRegistryCreator;
-import br.com.caelum.vraptor.hibernate.SessionCreator;
-import br.com.caelum.vraptor.hibernate.SessionFactoryCreator;
-
 public class PluginTest {
 
 	private ConfigurationCreator configurationCreator;
@@ -46,8 +41,8 @@ public class PluginTest {
 	private Session session;
 
 	@Test
-	public void testWithoutEnvironment() {
-		buildConfigurationWithoutEnvironment();
+	public void testIfSessionisUp() {
+		buildConfiguration();
 		buildServiceRegistry();
 		buildSessionFactory();
 		buildSession();
@@ -61,7 +56,7 @@ public class PluginTest {
 		assertTrue(sessionFactory.isClosed());
 	}
 
-	private void buildConfigurationWithoutEnvironment() {
+	private void buildConfiguration() {
 		configurationCreator = new ConfigurationCreator();
 		configurationCreator = spy(configurationCreator);
 
