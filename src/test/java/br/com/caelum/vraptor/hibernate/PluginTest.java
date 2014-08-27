@@ -18,20 +18,28 @@ package br.com.caelum.vraptor.hibernate;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+import java.net.URL;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.junit.Before;
 import org.junit.Test;
 
-import br.com.caelum.vraptor.hibernate.ConfigurationCreator;
-import br.com.caelum.vraptor.hibernate.ServiceRegistryCreator;
-import br.com.caelum.vraptor.hibernate.SessionCreator;
-import br.com.caelum.vraptor.hibernate.SessionFactoryCreator;
+import br.com.caelum.vraptor.environment.Environment;
 
+/**
+ * The goal of this class is only to test if Hibernate Session starts properly. No more tests are made.
+ */
 public class PluginTest {
+
+	private Environment environment;
 
 	private ConfigurationCreator configurationCreator;
 	private Configuration configuration;
@@ -45,9 +53,17 @@ public class PluginTest {
 	private SessionCreator sessionCreator;
 	private Session session;
 
+	@Before
+	public void setup() {
+		environment = mock(Environment.class);
+
+		URL cfgLocation = getClass().getResource("/hibernate.cfg.xml");
+		when(environment.getResource(anyString())).thenReturn(cfgLocation);
+	}
+
 	@Test
-	public void testWithoutEnvironment() {
-		buildConfigurationWithoutEnvironment();
+	public void testIfSessionisUp() {
+		buildConfiguration();
 		buildServiceRegistry();
 		buildSessionFactory();
 		buildSession();
@@ -61,8 +77,8 @@ public class PluginTest {
 		assertTrue(sessionFactory.isClosed());
 	}
 
-	private void buildConfigurationWithoutEnvironment() {
-		configurationCreator = new ConfigurationCreator();
+	private void buildConfiguration() {
+		configurationCreator = new ConfigurationCreator(environment);
 		configurationCreator = spy(configurationCreator);
 
 		configuration = configurationCreator.getInstance();
