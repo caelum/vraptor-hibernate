@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.hibernate.Interceptor;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,9 +58,24 @@ public class ConfigurationCreator {
 
 	@Produces
 	@ApplicationScoped
+	@SuppressWarnings("unchecked")
 	public Configuration getInstance() {
+		Configuration configuration = new Configuration();
+
+		String hibernateInterceptor = environment.get("hibernate.interceptor.class", null);
+		if (hibernateInterceptor != null) {
+			try {
+				Class<Interceptor> clazz = (Class<Interceptor>) Class.forName(hibernateInterceptor);
+				configuration.setInterceptor(clazz.newInstance());
+				LOGGER.debug("Using interceptor {}", hibernateInterceptor);
+
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+				LOGGER.error("Cannot use interceptor {}", hibernateInterceptor);
+			}
+		}
+
 		URL location = getHibernateCfgLocation();
 		LOGGER.debug("building configuration using {} file", location);
-		return new Configuration().configure(location);
+		return configuration.configure(location);
 	}
 }
