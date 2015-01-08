@@ -58,24 +58,21 @@ public class ConfigurationCreator {
 
 	@Produces
 	@ApplicationScoped
-	@SuppressWarnings("unchecked")
 	public Configuration getInstance() {
 		Configuration configuration = new Configuration();
 
-		String hibernateInterceptor = environment.get("hibernate.interceptor.class", null);
-		if (hibernateInterceptor != null) {
-			try {
-				Class<Interceptor> clazz = (Class<Interceptor>) Class.forName(hibernateInterceptor);
-				configuration.setInterceptor(clazz.newInstance());
-				LOGGER.debug("Using interceptor {}", hibernateInterceptor);
-
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-				LOGGER.error("Cannot use interceptor {}", hibernateInterceptor);
-			}
-		}
+		extraConfigurations(configuration);
 
 		URL location = getHibernateCfgLocation();
 		LOGGER.debug("building configuration using {} file", location);
 		return configuration.configure(location);
+	}
+
+	/**
+	 * Override this method in a specialize class (using CDI's @Specializes) to set custom configurations.
+	 *
+	 * @param configuration
+	 */
+	protected void extraConfigurations(Configuration configuration) {
 	}
 }
