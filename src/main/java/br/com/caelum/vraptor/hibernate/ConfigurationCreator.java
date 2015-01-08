@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.hibernate.Interceptor;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,8 +59,20 @@ public class ConfigurationCreator {
 	@Produces
 	@ApplicationScoped
 	public Configuration getInstance() {
+		Configuration configuration = new Configuration();
+
+		extraConfigurations(configuration);
+
 		URL location = getHibernateCfgLocation();
 		LOGGER.debug("building configuration using {} file", location);
-		return new Configuration().configure(location);
+		return configuration.configure(location);
+	}
+
+	/**
+	 * Override this method in a specialize class (using CDI's @Specializes) to set custom configurations.
+	 *
+	 * @param configuration
+	 */
+	protected void extraConfigurations(Configuration configuration) {
 	}
 }
