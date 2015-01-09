@@ -31,3 +31,19 @@ To do that you just need to add the follow content into your project's `beans.xm
     <class>br.com.caelum.vraptor.hibernate.TransactionDecorator</class>
 </decorators>
 ```
+# Extra Configurations
+
+If you want to add some custom configuration in `org.hibernate.cfg.Configuration`,
+extend the `br.com.caelum.vraptor.hibernate.ConfigurationCreator` class and override
+the `protected void extraConfigurations(Configuration configuration)` method.
+You need to annotate your extended class with `@Specializes` annotation.
+
+```java
+@Specializes
+public class MyConfigurationCreator extends ConfigurationCreator {
+	@Override
+	protected void extraConfigurations(Configuration configuration) {
+		configuration.setInterceptor(new MyHibernateInterceptor());
+	}
+}
+```

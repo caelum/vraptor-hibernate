@@ -16,16 +16,15 @@
  */
 package br.com.caelum.vraptor.hibernate;
 
-import java.net.URL;
+import br.com.caelum.vraptor.environment.Environment;
+import org.hibernate.cfg.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-
-import org.hibernate.cfg.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import br.com.caelum.vraptor.environment.Environment;
+import java.net.URL;
 
 
 /**
@@ -58,8 +57,20 @@ public class ConfigurationCreator {
 	@Produces
 	@ApplicationScoped
 	public Configuration getInstance() {
+		Configuration configuration = new Configuration();
+
+		extraConfigurations(configuration);
+
 		URL location = getHibernateCfgLocation();
 		LOGGER.debug("building configuration using {} file", location);
-		return new Configuration().configure(location);
+		return configuration.configure(location);
+	}
+
+	/**
+	 * Override this method in a specialize class (using CDI's @Specializes) to set custom configurations.
+	 *
+	 * @param configuration
+	 */
+	protected void extraConfigurations(Configuration configuration) {
 	}
 }
