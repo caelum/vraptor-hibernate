@@ -16,17 +16,15 @@
  */
 package br.com.caelum.vraptor.hibernate;
 
-import java.net.URL;
+import br.com.caelum.vraptor.environment.Environment;
+import org.hibernate.cfg.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-
-import org.hibernate.Interceptor;
-import org.hibernate.cfg.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import br.com.caelum.vraptor.environment.Environment;
+import java.net.URL;
 
 
 /**
