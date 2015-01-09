@@ -35,7 +35,8 @@ To do that you just need to add the follow content into your project's `beans.xm
 
 If you want to add some custom configuration in `org.hibernate.cfg.Configuration`,
 extend the `br.com.caelum.vraptor.hibernate.ConfigurationCreator` class and override
-the extraConfigurations. You need to annotate your extended class with `@Specializes` annotation.
+the `protected void extraConfigurations(Configuration configuration)` method.
+You need to annotate your extended class with `@Specializes` annotation.
 
 ```java
 @Specializes
