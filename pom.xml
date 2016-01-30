@@ -46,6 +46,17 @@
 			<timezone>-3</timezone>
 		</developer>
 		<developer>
+			<id>Turini</id>
+			<name>Rodrigo Turini</name>
+			<email>rodrigo.turini@caelum.com.br</email>
+			<organization>Caelum</organization>
+			<organizationUrl>http://www.caelum.com.br</organizationUrl>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>-3</timezone>
+		</developer>
+		<developer>
 			<id>garcia-jj</id>
 			<name>Otávio Garcia</name>
 			<email>otavio@otavio.com.br</email>
