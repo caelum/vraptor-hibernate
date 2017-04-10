@@ -89,13 +89,13 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.3.0.Final</version>
+			<version>5.2.9.Final</version>
 		</dependency>
 
 		<dependency>
 			<groupId>br.com.caelum</groupId>
 			<artifactId>vraptor</artifactId>
-			<version>4.2.0-RC3</version>
+			<version>4.2.0-RC5</version>
 		</dependency>
 
 		<dependency>
